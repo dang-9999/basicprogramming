@@ -1,0 +1,2 @@
+module cafe_kiosk {
+}
