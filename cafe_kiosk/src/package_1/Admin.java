@@ -26,7 +26,7 @@ public class Admin {
 			File file = new File("test.txt");
 			//동치인 메뉴가 있는지 확인
 			ArrayList<String> argument = Main.ReadFile2("menuFile.txt");
-			for(int i=0; i<)
+			//for(int i=0; i<);
 		}
 		//문법 검사 끝
 		return 0;
