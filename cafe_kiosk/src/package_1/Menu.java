@@ -47,4 +47,5 @@ public class Menu {
 	public String toString() {
 		return name+"\t"+Integer.toString(price)+"\t"+Integer.toString(quantity);
 	}
+
 }
