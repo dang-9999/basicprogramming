@@ -115,7 +115,7 @@ public class Admin {
 		//result가 1이면 메뉴이름이 존재하지 않음
         if (result == 1) {
             try {
-                FileWriter fileWriter = new FileWriter("Menu.txt", true);
+                FileWriter fileWriter = new FileWriter("Menu.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 // 메뉴 항목 추가
@@ -140,19 +140,83 @@ public class Admin {
     }
 
 
-	public int deleteMenu(String name) {
-		//초기화
-        int result = findName(name);
+	public int deleteMenu(String inputName) {
+		//기본적인 선언
+        int result = findName(inputName);
+		List<String[]> menuList;
+		menuList = fileTolist();
 
 		// result가 1이면 메뉴가 존재하지 않는 상태 & 탈출
         if (result == 1) {
             return -1; 
         } else if (result == -1) { //동일한 이름의 메뉴가 이미 파일에 존재
+
+			//반복문을 통해 리스트를 검사하고 일치하는 메뉴 명이 있으면 리스트에서 제거
+			for (String[] menuData : menuList) {
+				if (menuData[0].equals(inputName)) {
+					menuList.remove(menuData);
+				}
+			}
+
+			try {
+				FileWriter fileWriter = new FileWriter("Menu.txt");
+				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+	
+				// 메뉴 데이터 배열을 공백으로 구분된 문자열로 변환
+				for (String[] menuData : menuList) {
+					String line = String.join(" ", menuData);
+					bufferedWriter.write(line);
+					bufferedWriter.newLine();
+				}
+	
+				bufferedWriter.close();
+				fileWriter.close();
+				System.out.println("메뉴 리스트를 파일에 저장했습니다.");
+
+				return 1;
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("메뉴 리스트를 파일에 저장하는 중 오류가 발생했습니다.");
+			}
             
         }
 
-        return 0; // 다른 상황
+		//예외적인 오류 발생 & 탈출
+        return 0; 
     }
+
+	public int changeMenu(String inputName, int inputquantity){
+
+		//기본적인 선언
+        int result = findName(inputName);
+		List<String[]> menuList;
+
+		menuList = fileTolist();
+
+		// result가 1이면 메뉴가 존재하지 않는 상태 & 탈출
+        if (result == 1) {
+            return -1; 
+        } else if (result == -1) { //동일한 이름의 메뉴가 이미 파일에 존재
+
+			//반복문을 통해 리스트를 검사하고 일치하는 메뉴 명이 있으면 리스트에서 제거
+			for (String[] menuData : menuList) {
+				if (menuData[0].equals(inputName)) {
+					menuData[3] = String.valueOf(inputquantity);
+				}
+			}
+		    
+			return 1;
+		}
+
+		//예외적인 오류 발생 & 탈출
+		return 0;
+	}
+
+
+
+
+
 
 	
 }
