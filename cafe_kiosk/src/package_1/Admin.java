@@ -213,10 +213,22 @@ public class Admin {
 		return 0;
 	}
 
+	public void printFile() {
+        try {
+            // BufferedReader 객체 생성
+            BufferedReader reader = new BufferedReader(new FileReader("logfile.txt"));
 
+            String line;
 
+            // 라인 단위로 파일 읽고 출력
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
 
-
-
-	
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("파일을 읽는 도중 오류가 발생했습니다.");
+        }
+	}
 }
