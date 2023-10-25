@@ -47,7 +47,7 @@ public class Admin {
 	}
 
 
-	//다은 수정 중
+	//이 아래로 다은 수정한 것
 	public static List<String[]> fileTolist() {
 		List<String[]> menuList = new ArrayList<>();
 
