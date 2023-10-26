@@ -1,14 +1,20 @@
 package package_1;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 	
 	public static void main(String[] args) {
+
+		Scanner scanner = new Scanner(System.in);
+
+
+
+
 		// TODO Auto-generated method stub
 		
 		//파일 경로, 파일 객체
@@ -33,7 +39,68 @@ public class Main {
 		if(ReadFile(logFilePath) <= 0) return;
 		//파일 무결성 확인 끝
 		System.out.println("파일 무결성임!!!!");
+
+
+		//시간입력프롬프트
+		//시스템 시간 입력
+		System.out.println("시스템 시간을 입력해주세요. (예시: 1026161500)");
+		String answer = scanner.nextLine();
+		// setInitTime(answer) 시간 저장하고 모듈 불러오는 함수 추가하기 
+
+
+		//회원정보 입력여부
+		int infoChoice = User.askInfo();
+
+		if (infoChoice == 1) {
+			// 사용자가 yes를 대답
+			// 전화번호 입력 프롬프트 출력
+
+			System.out.println("전화번호를 입력해주세요. (예시: 01012345678)");
+			int phoneNum = scanner.nextInt();
+			int result = User.addPhoneNum(phoneNum);
+
+			if (result == 1){
+				//number와 phoneNum과 일치하는 정보가 있다면
+			} else if(result ==-1 ){
+				//number와 phoneNum과 일치하는 정보가 없다면
+				//addPhoneNum
+			} else {
+				//오류가 발생한다면
+			}
+
+
+
+
+		} else if (infoChoice == 2) {
+			// 사용자가 no를 대답
+			//메뉴 주문 프롬프트 출력
+		
+
+
+		} else if (infoChoice == 3) {
+			// 사용자가 admin을 대답, 
+			//관리자 모드로 진입
+
+		} else if (infoChoice == 4) {
+			// 사용자가 exit를 대답, 종료한 경우
+		} else {
+			// 오류 발생
+			System.out.println("규칙에 어긋나는 키 입력입니다. ");
+		}
+
+
+
+
+
+
+
+
+
+
+		
 	}
+
+
 	//파일 생성하는 함수
 	public static int createFile(File file) { //정상결과 0, 오류 -1
 		if(!file.exists()) {
