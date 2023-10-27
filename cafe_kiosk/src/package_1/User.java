@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class User {
 
@@ -34,7 +35,7 @@ public class User {
     }
 
 
-    public static int findPhoneNum(int phoneNum) {
+    public static int findPhoneNum(String phoneNum) {
         try {
             // FileReader와 BufferedReader 객체 생성
             FileReader fileReader = new FileReader("MemberInfo.txt");
@@ -44,10 +45,10 @@ public class User {
 
             while ((line = bufferedReader.readLine()) != null) {
                 // 각 라인에서 휴대폰 번호를 추출 (가정: 번호는 라인의 처음에 있음)
-                int number = Integer.parseInt(line);
+                String number = line.trim();
 
                 // 입력된 번호와 비교
-                if (number == phoneNum) {
+                if (number.equals(phoneNum)) {
                     // 일치하는 정보가 있다면 1 반환
                     bufferedReader.close();
                     fileReader.close();
@@ -68,7 +69,7 @@ public class User {
 
     
 
-    public static int addPhoneNum(int phoneNum) {
+    public static int addPhoneNum(String phoneNum) {
         int result;
 
         // 입력된 번호가 문법적으로 옳은지 확인
@@ -92,7 +93,7 @@ public class User {
 
                 // 회원 정보를 파일의 마지막 다음 행에 추가
                 bufferedWriter.newLine();
-                bufferedWriter.write(String.valueOf(phoneNum));
+                bufferedWriter.write(phoneNum);
 
                 // 파일 닫기
                 bufferedWriter.close();
@@ -106,6 +107,18 @@ public class User {
         }
 
         return 0; // 다른 상황
+    }
+
+    public static boolean isValidPhoneNum(String phoneNum) {
+        // 정규표현식 패턴
+        String pattern = "010[0-9]{4}[0-9]{4}";
+
+        // 패턴과 입력된 전화번호를 비교
+        if (Pattern.matches(pattern, phoneNum)) {
+            return true; // 유효한 전화번호
+        } else {
+            return false; // 유효하지 않은 전화번호
+        }
     }
     
 }
