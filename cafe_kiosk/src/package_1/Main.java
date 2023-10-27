@@ -11,6 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		Scanner scanner = new Scanner(System.in);
+		boolean systemOP = true;
 
 
 
@@ -51,41 +52,57 @@ public class Main {
 		//회원정보 입력여부
 		int infoChoice = User.askInfo();
 
-		if (infoChoice == 1) {
-			// 사용자가 yes를 대답
-			// 전화번호 입력 프롬프트 출력
+		while(systemOP){
 
-			System.out.println("전화번호를 입력해주세요. (예시: 01012345678)");
-			int phoneNum = scanner.nextInt();
-			int result = User.addPhoneNum(phoneNum);
+			if (infoChoice == 1) {
+				// 사용자가 yes를 대답
+				// 전화번호 입력 프롬프트 출력
 
-			if (result == 1){
-				//number와 phoneNum과 일치하는 정보가 있다면
-			} else if(result ==-1 ){
-				//number와 phoneNum과 일치하는 정보가 없다면
-				//addPhoneNum
+				System.out.println("전화번호를 입력해주세요. (예시: 01012345678)");
+				String phoneNum = scanner.nextLine();
+				int result = User.addPhoneNum(phoneNum);
+
+				if (result == 1){
+					//number와 phoneNum과 일치하는 정보가 있다면
+					//Order 메소드 호출
+					//showMenus()
+					
+				} else if(result ==-1 ){
+					//number와 phoneNum과 일치하는 정보가 없다면
+					//Order 메소드 호출
+					//addPhoneNum
+					//showMenus()
+					
+
+				} else {
+					//오류가 발생한다면
+					System.out.println("오류가 발생하였습니다. ");
+					continue;
+				}
+				break;
+
+			} else if (infoChoice == 2) {
+				// 사용자가 no를 대답
+				//메뉴 주문 프롬프트 출력
+			
+
+
+				break;
+
+			} else if (infoChoice == 3) {
+				// 사용자가 admin을 대답, 
+				//관리자 모드로 진입
+				break;
+
+			} else if (infoChoice == 4) {
+				// 사용자가 exit를 대답, 종료한 경우
+
+				break;
 			} else {
-				//오류가 발생한다면
+				// 오류 발생
+				System.out.println("규칙에 어긋나는 키 입력입니다. ");
+				continue;
 			}
-
-
-
-
-		} else if (infoChoice == 2) {
-			// 사용자가 no를 대답
-			//메뉴 주문 프롬프트 출력
-		
-
-
-		} else if (infoChoice == 3) {
-			// 사용자가 admin을 대답, 
-			//관리자 모드로 진입
-
-		} else if (infoChoice == 4) {
-			// 사용자가 exit를 대답, 종료한 경우
-		} else {
-			// 오류 발생
-			System.out.println("규칙에 어긋나는 키 입력입니다. ");
 		}
 
 
