@@ -8,7 +8,13 @@ public class TimeManager {
 	SimpleDateFormat dateFormat = new SimpleDateFormat("MMdd/HHmmss");
 	long startTime;
 	Date initTime;
+	public TimeManager(){
+		
+	}
 	public TimeManager(String initTime) throws ParseException {
+		this.setInitTime(initTime);
+	}
+	public void setInitTime(String initTime) throws ParseException {
 		startTime = System.currentTimeMillis();
 		this.initTime = dateFormat.parse(initTime);
 	}
