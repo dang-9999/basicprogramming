@@ -5,6 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.lang;
 
 public class Main {
 	
@@ -193,6 +197,80 @@ public class Main {
 			return 0;
 		}
 		return 0;
+	}
+	
+	// 검사함수들입니다-peace
+	
+	public static int isPhoneNumber(String phoneNumber) {	// 전화번호 검사 함수 - return 1==true
+		// 정규식 정의
+		String regex = "010[0-9]{4}[0-9]{4}";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(phoneNumber);
+		if(matcher.matches() && phoneNumber.length() == 11) {
+			return 1;
+		}else{
+			return 0;
+		}
+
+	}
+	
+	public static int isMenuName(String menuName) {		// 메뉴이름 검사 함수 - return 1==true
+		// 검사할 문자열이 "결제하기"인 경우 false 반환
+        if ("결제하기".equals(menuName)) {
+            return 0;
+        }
+
+        // 문자열의 길이가 1 이상이어야 함
+        if (menuName.length() < 1) {
+            return 0;
+        }
+
+        // 문자열의 모든 문자가 실제 문자인지 확인
+        for (char c : menuName.toCharArray()) {
+            if (!Character.isLetter(c)) {
+                return 0;
+            }
+        }
+
+        // 모든 조건을 만족하면 유효한 메뉴 이름
+        return 1;
+		}
+	
+	public static int isMenuPrice(String menuPrice) {	// 메뉴가격 검사 함수 - return 1==true
+		// "0"이라는 길이 1짜리 문자열이거나
+        if (menuPrice.equals("0")) {
+            return 1;
+        }
+
+        // 숫자로만 이루어져 있고 첫 글자가 0이 아니며 길이가 2 이상인 문자열
+        if (menuPrice.matches("[1-9][0-9]*")) {
+            return 1;
+        }
+
+        // 위의 조건을 모두 만족하지 않는 경우
+        return 0;
+	}
+	public static int isOrderQuantity(String orderQuantity) {	// 주문수량(잔여수량) 검사 함수 - return 1==true
+		// 길이가 1 이상
+        if (orderQuantity.length() < 1) {
+            return 0;
+        }
+
+        // 탭이나 개행이 없어야 함
+        if (orderQuantity.contains("\t") || orderQuantity.contains("\n")) {
+            return 0;
+        }
+
+        try {
+            // 문자열을 정수로 변환
+            int quantity = Integer.parseInt(orderQuantity);
+
+            // 0을 포함하고 양의 정수여야 함
+            return (quantity >= 0) ? 1 : 0;
+        } catch (NumberFormatException e) {
+            // 정수로 변환할 수 없는 경우
+            return 0;
+        }
 	}
 
 }
