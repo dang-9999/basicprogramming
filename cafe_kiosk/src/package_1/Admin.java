@@ -16,7 +16,7 @@ public class Admin {
 		List<String[]> menuList = new ArrayList<>();
 
         try {
-            String filename = "Menu.txt"; // 파일 이름
+            String filename = "menuFile.txt"; // 파일 이름
             FileReader fileReader = new FileReader(filename);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -79,7 +79,7 @@ public class Admin {
 		//result가 1이면 메뉴이름이 존재하지 않음
         if (result == 1) {
             try {
-                FileWriter fileWriter = new FileWriter("Menu.txt");
+                FileWriter fileWriter = new FileWriter("menuFile.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 // 메뉴 항목 추가
@@ -123,7 +123,7 @@ public class Admin {
 			}
 
 			try {
-				FileWriter fileWriter = new FileWriter("Menu.txt");
+				FileWriter fileWriter = new FileWriter("menuFile.txt");
 				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 	
 				// 메뉴 데이터 배열을 공백으로 구분된 문자열로 변환
@@ -180,7 +180,7 @@ public class Admin {
 	public void printFile() {
         try {
             // BufferedReader 객체 생성
-            BufferedReader reader = new BufferedReader(new FileReader("logfile.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("logFile.txt"));
 
             String line;
 
