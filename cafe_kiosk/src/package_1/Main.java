@@ -53,11 +53,13 @@ public class Main {
 		// setInitTime(answer) 시간 저장하고 모듈 불러오는 함수 추가하기 
 
 
-		//회원정보 입력여부
-		int infoChoice = User.askInfo();
+		
 
 		while(systemOP){
 
+			//회원정보 입력여부
+			int infoChoice = User.askInfo();
+			
 			if (infoChoice == 1) {
 				// 사용자가 yes를 대답
 				// 전화번호 입력 프롬프트 출력
@@ -96,8 +98,8 @@ public class Main {
 			} else if (infoChoice == 3) {
 				// 사용자가 admin을 대답, 
 				//관리자 모드로 진입
-				boolean Admin = true;
-				while(Admin) {
+				boolean Admin1 = true;
+				while(Admin1) {
 					System.out.print("패스워드 입력: ");
 					String password = scanner.nextLine();
 					int loginChoice = AdminLogin(password);
@@ -107,27 +109,30 @@ public class Main {
 						case 0 -> System.out.println("패스워드가 틀렸습니다.");
 						case 1 -> 
 						{
-							boolean admin = true;
-							while(admin){
+							boolean Admin2 = true;
+							while(Admin2){
 								try {
 								System.out.println("1.판매로그확인\n2.메뉴 추가\n3.메뉴 삭제\n4.메뉴 수량 조정\n5.관리자 모드 종료");
 								int adminChoice = scanner.nextInt();
+								Admin admin = new Admin();
 								switch(adminChoice) {
-								case 1 -> System.out.println("판매로그");//판매로그
-								case 2 -> System.out.println("메뉴추가");//메뉴 추가
-								case 3 -> System.out.println("메뉴삭제");//메뉴 삭제
-								case 4 -> System.out.println("메뉴수량조정");//메뉴 수량 조정
+								case 1 -> System.out.println("example."); //판매로그
+								case 2 -> System.out.println("example."); //메뉴 추가
+								case 3 -> System.out.println("example."); //메뉴 삭제
+								case 4 -> System.out.println("example."); //메뉴 수량 조정
 								case 5 -> 
-									{admin = false; 
-									 System.out.println("관리자모드를 종료합니다.\n\n");
+									{Admin2 = false; 
+									 scanner.nextLine();
+									 System.out.println("관리자모드를 종료합니다.\n\n"); //관리자 모드 종료
 									}
+								default -> System.out.println("규칙에 어긋나는 키 입력입니다."); //예외
 								}
 								} catch(InputMismatchException e) {
-									System.out.println("규칙에 어긋나는 키 입력입니다.");
+									System.out.println("규칙에 어긋나는 키 입력입니다."); //예외
 									scanner.nextLine();
 								}
 							}
-							Admin = false;
+							Admin1 = false;
 						}
 					}
 					
