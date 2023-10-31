@@ -290,10 +290,12 @@ public class Main {
 		String index[] = line.trim().split("\\s+");
 		if(filepath == "userFile.txt") {
 			if(index.length == 0) return 1;
-			if(index.length == 1) {
-				//전화번호 문법 검사 함수 호출
-				int result = isPhoneNumber(index[0]);
-				return result;
+			if(index.length == 3) {
+				//전화번호, 쿠폰 개수(수량), 누적 금액(메뉴 가격) 문법 검사 함수 호출
+				if(isMenuName(index[0]) == 0 || isOrderQuantity(index[1]) == 0 || isMenuPrice(index[2]) == 0)
+					return 0;
+				else 
+					return 1;
 			}
 			return 0;
 		}
@@ -344,7 +346,7 @@ public class Main {
         if ("결제하기".equals(menuName)) {
             return 0;
         }
-
+        
         // 문자열의 길이가 1 이상이어야 함
         if (menuName.length() < 1) {
         	return 0;
@@ -356,7 +358,12 @@ public class Main {
             	return 0;
             }
         }
-
+        
+        // 공백을 포함하는 문자열은 false
+        if (menuName.matches(".*\\s+.*")) {
+            return 0;
+        }
+        
         // 모든 조건을 만족하면 유효한 메뉴 이름
         return 1;
 		}
