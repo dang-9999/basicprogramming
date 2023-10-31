@@ -17,10 +17,6 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		boolean systemOP = true;
 
-
-
-
-		// TODO Auto-generated method stub
 		
 		//파일 경로, 파일 객체
 		String userFilePath = "userFile.txt";
@@ -224,16 +220,6 @@ public class Main {
 			}
 		}
 
-
-
-
-
-
-
-
-
-
-		
 	}
 
 
