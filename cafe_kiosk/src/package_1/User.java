@@ -14,7 +14,7 @@ public class User {
         Scanner scanner = new Scanner(System.in);
 
 
-        System.out.println("결제 시 회원 정보를 입력하시겠습니까?(yes, no, exit)");
+        System.out.println("결제 시 회원 정보를 입력하시겠습니까?\n회원정보 입력으로 구매시: yes \n회원정보 미입력으로 구매시: no  \n구매화면에서 나갈시: exit");
         String answer = scanner.nextLine();
 
         // 문자열을 소문자로 변환

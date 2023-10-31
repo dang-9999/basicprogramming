@@ -211,6 +211,7 @@ public class Main {
 
 			} else if (infoChoice == 4) {
 				// 사용자가 exit를 대답, 종료한 경우
+				System.out.println("이용해주셔서 감사합니다.");
 				systemOP = false;
 
 				break;
