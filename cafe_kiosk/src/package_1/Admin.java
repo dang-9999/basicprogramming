@@ -166,7 +166,7 @@ public class Admin {
 			//반복문을 통해 리스트를 검사하고 일치하는 메뉴 명이 있으면 리스트에서 제거
 			for (String[] menuData : menuList) {
 				if (menuData[0].equals(inputName)) {
-					menuData[3] = String.valueOf(inputquantity);
+					menuData[2] = String.valueOf(inputquantity);
 				}
 			}
 		    
