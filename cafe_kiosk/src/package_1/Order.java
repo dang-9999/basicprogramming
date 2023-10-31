@@ -15,14 +15,16 @@ public class Order {
 	private List<Menu> orderItems;
 	private String menuFilePath = "menuFile.txt";
 	private String logFilePath = "logFile.txt";
-	private String userName;
+	private String userFilePath = "userFile.txt";
+	private Menu user;
 	private TimeManager tm;
 	private Scanner scan = new Scanner(System.in);
+	private int COUPONPRICE = 1000;
 	
 	public Order(TimeManager tm) {
 		this.tm = tm;
 		//userName초기화
-		userName = "-";
+		user = new Menu("-", 0, 0);
 		//ItemList초기화
 		menuItems = new ArrayList<>();
 		orderItems = new ArrayList<>();
@@ -31,24 +33,39 @@ public class Order {
 		//메뉴Item불러오기
 		try (BufferedReader br = new BufferedReader(new FileReader(menuFile))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.trim().split("\\s+");
-                if (parts.length == 3) {
-                    String name = parts[0];
-                    int price = Integer.parseInt(parts[1]);
-                    int quantity = Integer.parseInt(parts[2]);
-                    Menu item = new Menu(name, price, quantity);
-                    menuItems.add(item);
-                }
-            }
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.trim().split("\\s+");
+				if (parts.length == 3) {
+					String name = parts[0];
+					int price = Integer.parseInt(parts[1]);
+					int quantity = Integer.parseInt(parts[2]);
+					Menu item = new Menu(name, price, quantity);
+					menuItems.add(item);
+				}
+			}
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("오류)메뉴파일을 읽어오는데 실패했습니다");
         }
-//		System.out.println("initialize");
 	}
 	public Order(TimeManager tm, String uN) {
 		this(tm);
-		this.userName = uN;
+		this.user.setName(uN);
+		File userFile = new File(userFilePath);
+		try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
+            String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.trim().split("\\s+");
+				if (parts.length == 3) {
+					String name = parts[0];
+					if (name.equals(uN)) {
+						this.user.setPrice(Integer.parseInt(parts[2]));
+						this.user.setQuantity(Integer.parseInt(parts[1]));
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("오류)유저파일을 읽어오는데 실패했습니다");
+		}
 	}
 	
 	public void run() {
@@ -94,11 +111,13 @@ public class Order {
         	String inputname = parts[0];
         	String inputqStr = parts[1];
         	try {
-        		int q = Integer.parseInt(inputqStr);
+				int q = Integer.parseInt(inputqStr);
+				if (q == 0)
+					return 0; //의미없는 입력
         		for(Menu menu: menuItems) {
         			if(menu.getName().equals(inputname)) {
         				//메뉴판에 존재하는 메뉴입력
-        				if(menu.getQuantity()>q && q!=0) {
+        				if(menu.getQuantity()>q) {
         					//적절한 주문수량
         					int sum = q;
         					for(Menu item: orderItems) {
@@ -164,29 +183,43 @@ public class Order {
 		}
 		System.out.print("총");
 		System.out.print(totalprice);
-		System.out.println("원입니다.");
+		System.out.print("원입니다.");
+		//쿠폰보유확인
+		int cntCouponHas = this.user.getQuantity();
+		if(cntCouponHas>0 && totalprice > 0){ //쿠폰개수가 0이상, 쿠폰으로 결제할 금액이 존재하는지.
+			while (true) {
+				System.out.println(" 쿠폰을 사용하시겠습니까?\n>");
+				System.out.print("\n>");
+				String userInput = this.scan.nextLine();
+				String[] parts = userInput.trim().split("\\s+");
+				
+				if (parts.length == 1) {
+					try{
+						int useCoupon = Integer.parseInt(parts[0]);
+						if(useCoupon == 0) break;
+						else if((totalprice - useCoupon*COUPONPRICE) >= 0) break;
+					} catch (NumberFormatException e) {
+						if (parts[0] == "")
+							return 0;
+					}
+				}
+				System.out.println("알림)적절한 입력이 아닙니다.");
+			}
+		}
 		//결제방법 선택
 		while(true) {
-			System.out.println("결제하기)결제방법을 입력해주세요\n매장식사>yes/포장하기>no/취소하기>(공백)");
-			System.out.print(">");
+			System.out.println("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
 			String userInput = this.scan.nextLine().trim();
 			if(userInput.equals("")) return 0;
-			else if(userInput.equals("yes")) break;
-			else if(userInput.equals("no")) break;
+			else if(userInput.equals("카드")) break;
+			else if(userInput.equals("현금")) break;
 			System.out.println("알림)적절한 입력이 아닙니다.");
 		}
-//		while(true) {
-//			System.out.print("결제수단을 선택해주세요: 카드/현금\n>");
-//			String userInput = scan.nextLine().trim();
-//			if(userInput.equals("카드")) break;
-//			else if(userInput.equals("현금")) break;
-//			System.out.println("알림)적절한 입력이 아닙니다.");
-//		}
 		//로그내용 작성 및 메뉴리스트 수정
 		String log = "";
 		String timeStr = this.tm.getTimeNow();
 		for(Menu item: orderItems) {
-			log+= timeStr+"\t"+this.userName+"\t"+item.getName()+"\t"+item.getQuantity()+"\n";
+			log+= timeStr+"\t"+this.user.getName()+"\t"+item.getName()+"\t"+item.getQuantity()+"\n";
 			totalprice+= item.getPrice()*item.getQuantity();
 			for(Menu menu: menuItems) {
 				if(item.getName().equals(menu.getName())) {
