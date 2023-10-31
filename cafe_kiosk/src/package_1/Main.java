@@ -122,6 +122,7 @@ public class Main {
 								 {
 									while(true) {
 										scanner.nextLine();
+										admin.printMenu();
 										System.out.println("추가하실 메뉴의 이름을 입력하세요");
 										System.out.print("추가하실 메뉴: ");
 										String menu = scanner.nextLine();
@@ -150,6 +151,7 @@ public class Main {
 								 {
 									while(true) {
 										scanner.nextLine();
+										admin.printMenu();
 										System.out.println("삭제하실 메뉴의 이름을 입력하세요");
 										System.out.print("삭제하실 메뉴: ");
 										String menu = scanner.nextLine();
