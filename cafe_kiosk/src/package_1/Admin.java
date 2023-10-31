@@ -11,7 +11,7 @@ import java.util.List;
 public class Admin {
 
 
-	//이 아래로 다은 수정한 것
+	
 	public static List<String[]> fileTolist() {
 		List<String[]> menuList = new ArrayList<>();
 

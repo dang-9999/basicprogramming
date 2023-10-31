@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -34,37 +36,64 @@ public class User {
         }
     }
 
+    public static List<String[]> fileTolist() {
+		List<String[]> userList = new ArrayList<>();
 
-    public static int findPhoneNum(String phoneNum) {
         try {
-            // FileReader와 BufferedReader 객체 생성
-            FileReader fileReader = new FileReader("userFile.txt");
+            String filename = "userFile.txt"; // 파일 이름
+            FileReader fileReader = new FileReader(filename);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             String line;
-
             while ((line = bufferedReader.readLine()) != null) {
-                // 각 라인에서 휴대폰 번호를 추출 (가정: 번호는 라인의 처음에 있음)
-                String number = line.trim();
-
-                // 입력된 번호와 비교
-                if (number.equals(phoneNum)) {
-                    // 일치하는 정보가 있다면 1 반환
-                    bufferedReader.close();
-                    fileReader.close();
-                    return 1;
-                }
+                // 공백으로 분할하여 String 배열로 저장
+                String[] parts = line.split(" ");
+                userList.add(parts);
             }
 
-            // 일치하는 정보가 없으면 -1 반환
             bufferedReader.close();
             fileReader.close();
-            return -1;
         } catch (IOException e) {
             e.printStackTrace();
-            // 예외 발생 시 0 반환
-            return 0;
         }
+
+        return userList;
+
+	}
+
+
+    public static int findPhoneNum(String phoneNum) {
+        //기본적인 선언
+		List<String[]> userList;
+		Boolean found = false;
+
+		userList = fileTolist();
+
+		//저장된 유저정보가 없을 때
+		if (userList == null){
+			System.out.println("저장된 이름이 없습니다.");
+			return 0;
+		}
+
+		//반복문을 통해 list를 하나씩 꺼냄
+		for (String[] userInfo : userList){
+			String userNum = userInfo[0];
+
+			if (userNum.equals(phoneNum)) {
+
+				//유저 정보가 존재함 & 탈출
+				found = true; 
+                return 1;
+            }
+		}
+
+		// 유저 정보가 존재하지 않을 경우 % 탈출
+		if (!found) {
+            return -1; 
+        }
+
+		//오류상황 & 탈출
+        return 0;
     }
 
     
@@ -88,18 +117,18 @@ public class User {
             // 회원 정보가 없는 경우
             try {
                 // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
-                FileWriter fileWriter = new FileWriter("userFile.txt", true);
+                FileWriter fileWriter = new FileWriter("userFile.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-                // 회원 정보를 파일의 마지막 다음 행에 추가
-                bufferedWriter.write(phoneNum);
-                bufferedWriter.newLine();
+                // 메뉴 항목 추가
+                String userData = phoneNum + " " + " 0" + " 0";
+                bufferedWriter.write(userData);
+                bufferedWriter.newLine(); // 새로운 줄 추가
+                
 
-                // 파일 닫기
                 bufferedWriter.close();
                 fileWriter.close();
-
-                return 1; // 성공
+                return 1; //회원정보 저장 성공
             } catch (IOException e) {
                 e.printStackTrace();
                 return 0; // 예외 발생
