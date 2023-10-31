@@ -72,20 +72,22 @@ public class Main {
 					//number와 phoneNum과 일치하는 정보가 있다면
 					//Order 메소드 호출
 					//showMenus()
-					
+
+
+					continue; // 회원정보 입력여부로 돌아감
 				} else if(result ==-1 ){
 					//number와 phoneNum과 일치하는 정보가 없다면
 					//Order 메소드 호출
 					//addPhoneNum
 					//showMenus()
-					
+
+					continue; // 회원정보 입력여부로 돌아감
 
 				} else {
 					//오류가 발생한다면
 					System.out.println("오류가 발생하였습니다. ");
-					continue;
+					continue; // 회원정보 입력여부로 돌아감
 				}
-				break;
 
 			} else if (infoChoice == 2) {
 				// 사용자가 no를 대답
@@ -93,7 +95,7 @@ public class Main {
 			
 
 
-				break;
+			systemOP = false;
 
 			} else if (infoChoice == 3) {
 				// 사용자가 admin을 대답, 
@@ -212,6 +214,7 @@ public class Main {
 
 			} else if (infoChoice == 4) {
 				// 사용자가 exit를 대답, 종료한 경우
+				systemOP = false;
 
 				break;
 			} else {
