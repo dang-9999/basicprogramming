@@ -14,7 +14,7 @@ public class User {
         Scanner scanner = new Scanner(System.in);
 
 
-        System.out.println("회원 정보를 입력하시겠습니까?(yes, no, exit)");
+        System.out.println("결제 시 회원 정보를 입력하시겠습니까?(yes, no, exit)");
         String answer = scanner.nextLine();
 
         // 문자열을 소문자로 변환
@@ -38,7 +38,7 @@ public class User {
     public static int findPhoneNum(String phoneNum) {
         try {
             // FileReader와 BufferedReader 객체 생성
-            FileReader fileReader = new FileReader("MemberInfo.txt");
+            FileReader fileReader = new FileReader("userFile.txt");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             String line;
@@ -88,12 +88,12 @@ public class User {
             // 회원 정보가 없는 경우
             try {
                 // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
-                FileWriter fileWriter = new FileWriter("MemberInfo.txt", true);
+                FileWriter fileWriter = new FileWriter("userFile.txt", true);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 // 회원 정보를 파일의 마지막 다음 행에 추가
-                bufferedWriter.newLine();
                 bufferedWriter.write(phoneNum);
+                bufferedWriter.newLine();
 
                 // 파일 닫기
                 bufferedWriter.close();

@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//이규빈 왔다감
 public class Main {
 	
 	public static void main(String[] args) {
@@ -22,6 +21,7 @@ public class Main {
 		String userFilePath = "userFile.txt";
 		String menuFilePath = "menuFile.txt";
 		String logFilePath = "logFile.txt";
+
 		
 		File userFile = new File(userFilePath);
 		File menuFile = new File(menuFilePath);
@@ -70,20 +70,21 @@ public class Main {
 					//showMenus()
 
 
-					continue; // 회원정보 입력여부로 돌아감
+					
 				} else if(result ==-1 ){
 					//number와 phoneNum과 일치하는 정보가 없다면
 					//Order 메소드 호출
 					//addPhoneNum
 					//showMenus()
 
-					continue; // 회원정보 입력여부로 돌아감
+					
 
 				} else {
 					//오류가 발생한다면
 					System.out.println("오류가 발생하였습니다. ");
-					continue; // 회원정보 입력여부로 돌아감
+				
 				}
+				continue;
 
 			} else if (infoChoice == 2) {
 				// 사용자가 no를 대답
