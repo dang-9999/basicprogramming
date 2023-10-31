@@ -16,7 +16,7 @@ public class User {
         Scanner scanner = new Scanner(System.in);
 
 
-        System.out.println("결제 시 회원 정보를 입력하시겠습니까?\n-회원정보 입력으로 구매시: yes \n-회원정보 미입력으로 구매시: no  \n-구매화면에서 나갈시: exit");
+        System.out.println("결제 시 회원 정보를 입력하시겠습니까?\n1.회원정보 입력으로 구매시: yes \n2.회원정보 미입력으로 구매시: no  \n3.구매화면에서 나갈시: exit");
         String answer = scanner.nextLine();
 
         // 문자열을 소문자로 변환
@@ -112,6 +112,13 @@ public class User {
 
         if (result == 1) {
             // 이미 회원 정보가 있는 경우
+
+
+
+
+
+
+
             return -1;
         } else if (result == -1) {
             // 회원 정보가 없는 경우
@@ -121,7 +128,7 @@ public class User {
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 // 메뉴 항목 추가
-                String userData = phoneNum + " " + " 0" + " 0";
+                String userData = phoneNum + " 0" + " 0"; //전화번호//쿠폰// 누적금액 
                 bufferedWriter.write(userData);
                 bufferedWriter.newLine(); // 새로운 줄 추가
                 
