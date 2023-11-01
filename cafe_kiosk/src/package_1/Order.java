@@ -186,18 +186,22 @@ public class Order {
 		System.out.print("원입니다.");
 		//쿠폰보유확인
 		int cntCouponHas = this.user.getQuantity();
+		int useCoupon = 0;
 		if(cntCouponHas>0 && totalprice > 0){ //쿠폰개수가 0이상, 쿠폰으로 결제할 금액이 존재하는지.
 			while (true) {
-				System.out.println(" 쿠폰을 사용하시겠습니까?\n>");
+				System.out.print(" 쿠폰을 사용하시겠습니까?\n보유한쿠폰갯수: ");
+				System.out.print(cntCouponHas);
+				System.out.print("\t최대사용가능한 쿠폰갯수: ");
+				int MaxUsableCoupan = totalprice / COUPONPRICE + ((totalprice % COUPONPRICE == 0) ? 0 : 1);
+				System.out.print(MaxUsableCoupan);
 				System.out.print("\n>");
 				String userInput = this.scan.nextLine();
 				String[] parts = userInput.trim().split("\\s+");
 				
 				if (parts.length == 1) {
 					try{
-						int useCoupon = Integer.parseInt(parts[0]);
-						if(useCoupon == 0) break;
-						else if((totalprice - useCoupon*COUPONPRICE) >= 0) break;
+						useCoupon = Integer.parseInt(parts[0]);
+						if(MaxUsableCoupan>=useCoupon && useCoupon>=0) break;
 					} catch (NumberFormatException e) {
 						if (parts[0] == "")
 							return 0;
@@ -207,14 +211,19 @@ public class Order {
 			}
 		}
 		//결제방법 선택
-		while(true) {
+		while (true) {
 			System.out.println("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
 			String userInput = this.scan.nextLine().trim();
-			if(userInput.equals("")) return 0;
-			else if(userInput.equals("카드")) break;
-			else if(userInput.equals("현금")) break;
+			if (userInput.equals(""))
+				return 0;
+			else if (userInput.equals("카드"))
+				break;
+			else if (userInput.equals("현금"))
+				break;
 			System.out.println("알림)적절한 입력이 아닙니다.");
 		}
+		//쿠폰사용 적용하고 적용내역 출력하기
+		this.user.setQuantity(cntCouponHas);
 		//로그내용 작성 및 메뉴리스트 수정
 		String log = "";
 		String timeStr = this.tm.getTimeNow();
@@ -237,7 +246,10 @@ public class Order {
 			FileWriter fileWriter = new FileWriter(menuFilePath);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(line);
-            bufferedWriter.close();
+			bufferedWriter.close();
+			//회원정보 수정하기
+
+
             // 로그파일 읽기
             FileReader fileReader = new FileReader(logFilePath);
             BufferedReader bufferedReader = new BufferedReader(fileReader);

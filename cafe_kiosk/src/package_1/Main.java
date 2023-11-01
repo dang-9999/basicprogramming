@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class Main {
 	
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 
 		Scanner scanner = new Scanner(System.in);
 		boolean systemOP = true;
@@ -48,7 +48,12 @@ public class Main {
 		TimeManager timeManager;
 		System.out.println("시스템 시간을 입력해주세요. (예시: MMdd/HHmmss)");
 		String initTime = scanner.nextLine();
-		timeManager = new TimeManager(initTime);
+		try{
+			timeManager = new TimeManager(initTime);
+		} catch (ParseException e) {
+			System.out.println("오류)시스템시간오류");
+			return;
+		}
 
 
 		
@@ -69,15 +74,19 @@ public class Main {
 				if (result == 1){
 					//number와 phoneNum과 일치하는 정보가 있다면
 					//Order 메소드 호출
-					//showMenus()
+					Order order = new Order(timeManager, phoneNum);
+					//run()
+					order.run();
 
 
 					
 				} else if(result ==-1 ){
 					//number와 phoneNum과 일치하는 정보가 없다면
-					//Order 메소드 호출
 					//addPhoneNum
-					//showMenus()
+					//Order 메소드 호출
+					Order order = new Order(timeManager, phoneNum);
+					//run()
+					order.run();
 
 					
 
@@ -90,7 +99,10 @@ public class Main {
 
 			} else if (infoChoice == 2) {
 				// 사용자가 no를 대답
-				//메뉴 주문 프롬프트 출력
+				//Order 메소드 호출
+				Order order = new Order(timeManager);
+				//run()
+				order.run();
 			
 
 
