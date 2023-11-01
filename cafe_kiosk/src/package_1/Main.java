@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class Main {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 
 		Scanner scanner = new Scanner(System.in);
 		boolean systemOP = true;
@@ -44,9 +45,10 @@ public class Main {
 
 		//시간입력프롬프트
 		//시스템 시간 입력
-		System.out.println("시스템 시간을 입력해주세요. (예시: 1026161500)");
-		String answer = scanner.nextLine();
-		// setInitTime(answer) 시간 저장하고 모듈 불러오는 함수 추가하기 
+		TimeManager timeManager;
+		System.out.println("시스템 시간을 입력해주세요. (예시: MMdd/HHmmss)");
+		String initTime = scanner.nextLine();
+		timeManager = new TimeManager(initTime);
 
 
 		
@@ -120,6 +122,7 @@ public class Main {
 								 {
 									while(true) {
 										scanner.nextLine();
+										admin.printMenu();
 										System.out.println("추가하실 메뉴의 이름을 입력하세요");
 										System.out.print("추가하실 메뉴: ");
 										String menu = scanner.nextLine();
@@ -148,6 +151,7 @@ public class Main {
 								 {
 									while(true) {
 										scanner.nextLine();
+										admin.printMenu();
 										System.out.println("삭제하실 메뉴의 이름을 입력하세요");
 										System.out.print("삭제하실 메뉴: ");
 										String menu = scanner.nextLine();
