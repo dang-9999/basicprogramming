@@ -58,9 +58,8 @@ public class Order {
 				if (parts.length == 3) {
 					String name = parts[0];
 					if (name.equals(uN)) {
-						this.user.setPrice(Integer.parseInt(parts[2]));
-						this.user.setQuantity(Integer.parseInt(parts[1]));
-						System.out.println("기존유저");
+						this.user.setPrice(Integer.parseInt(parts[1]));
+						this.user.setQuantity(Integer.parseInt(parts[2]));
 						break;
 					}
 				}
@@ -119,7 +118,7 @@ public class Order {
         		for(Menu menu: menuItems) {
         			if(menu.getName().equals(inputname)) {
         				//메뉴판에 존재하는 메뉴입력
-        				if(menu.getQuantity()>q) {
+        				if(menu.getQuantity()>=q) {
         					//적절한 주문수량
         					int sum = q;
         					for(Menu item: orderItems) {
@@ -185,15 +184,16 @@ public class Order {
 		}
 		System.out.print("총");
 		System.out.print(totalprice);
-		System.out.print("원입니다.");
+		System.out.println("원입니다.");
 		//쿠폰보유확인
-		int cntCouponHas = this.user.getQuantity();
+		int cntCouponHas = this.user.getPrice()/(COUPONPRICE * 10) - this.user.getQuantity();
+		if (cntCouponHas<0) System.out.println("쿠폰개수 오류");
 		int useCoupon = 0;
 		if(cntCouponHas>0 && totalprice > 0){ //쿠폰개수가 0이상, 쿠폰으로 결제할 금액이 존재하는지.
 			while (true) {
-				System.out.print(" 쿠폰을 사용하시겠습니까?\n보유한쿠폰갯수: ");
+				System.out.print("쿠폰이 사용가능합니다. 사용할 쿠폰개수를 입력해주세요.\n보유한쿠폰개수: ");
 				System.out.print(cntCouponHas);
-				System.out.print("\t최대사용가능한 쿠폰갯수: ");
+				System.out.print("\t최대사용가능한 쿠폰개수: ");
 				int MaxUsableCoupan = totalprice / COUPONPRICE + ((totalprice % COUPONPRICE == 0) ? 0 : 1);
 				System.out.print(MaxUsableCoupan);
 				System.out.print("\n>");
@@ -203,7 +203,8 @@ public class Order {
 				if (parts.length == 1) {
 					try{
 						useCoupon = Integer.parseInt(parts[0]);
-						if(MaxUsableCoupan>=useCoupon && useCoupon>=0) break; //사용할쿠폰이 최대사용가능개수이하, 0이상일경우
+						//사용할쿠폰이 최대사용가능개수, 보유개수이하, 0이상일경우 적절한 입력
+						if(MaxUsableCoupan>=useCoupon && cntCouponHas>=useCoupon&& useCoupon>=0) break;
 					} catch (NumberFormatException e) {
 						if (parts[0] == "") //취소입력
 							return 0;
@@ -214,7 +215,7 @@ public class Order {
 		}
 		//결제방법 선택
 		while (true) {
-			System.out.println("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
+			System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
 			String userInput = this.scan.nextLine().trim();
 			if (userInput.equals(""))
 				return 0;
@@ -225,7 +226,8 @@ public class Order {
 			System.out.println("알림)적절한 입력이 아닙니다.");
 		}
 		//쿠폰사용 적용하고 적용내역 출력하기
-		this.user.setQuantity(cntCouponHas);
+		this.user.setQuantity(this.user.getQuantity() + useCoupon);
+		this.user.setPrice(this.user.getPrice()+((totalprice>useCoupon*COUPONPRICE)?totalprice-useCoupon*COUPONPRICE:0));
 		//로그내용 작성 및 메뉴리스트 수정
 		String log = "";
 		String timeStr = this.tm.getTimeNow();
@@ -249,12 +251,30 @@ public class Order {
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(line);
 			bufferedWriter.close();
+			
 			//회원정보 수정하기
-
+			FileReader fileReader = new FileReader(userFilePath);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            StringBuilder userFileCont = new StringBuilder();
+			while ((line = bufferedReader.readLine()) != null) {
+				if (line.trim().split("\\s+")[0].equals(user.getName())) {
+					continue;
+				}
+                userFileCont.append(line).append("\n");
+            }
+			bufferedReader.close();
+			
+            fileWriter = new FileWriter(userFilePath);
+            bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(userFileCont.toString()); //기존파일내용
+			System.out.println(user.toString()+"\n");
+            bufferedWriter.write(user.toString()+"\n");			//추가되는내용
+			bufferedWriter.close();
+			fileWriter.close();
 
             // 로그파일 읽기
-            FileReader fileReader = new FileReader(logFilePath);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            fileReader = new FileReader(logFilePath);
+            bufferedReader = new BufferedReader(fileReader);
             StringBuilder logFileCont = new StringBuilder();
             while ((line = bufferedReader.readLine()) != null) {
                 logFileCont.append(line).append("\n");
@@ -266,7 +286,8 @@ public class Order {
             bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(logFileCont.toString());	//기존파일내용
             bufferedWriter.write(log);						//추가되는내용
-            bufferedWriter.close();
+			bufferedWriter.close();
+			fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

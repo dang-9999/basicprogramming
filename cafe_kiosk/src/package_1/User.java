@@ -123,12 +123,21 @@ public class User {
         } else if (result == -1) {
             // 회원 정보가 없는 경우
             try {
-                // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
+                
+			    FileReader fileReader = new FileReader(filename);  
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                StringBuilder userFileCont = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    userFileCont.append(line).append("\n");
+                }
+                bufferedReader.close();
                 FileWriter fileWriter = new FileWriter(filename);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
+                // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
                 // 메뉴 항목 추가
                 String userData = phoneNum + " 0" + " 0"; //전화번호//쿠폰// 누적금액 
+                bufferedWriter.write(userFileCont.toString());
                 bufferedWriter.write(userData);
                 bufferedWriter.newLine(); // 새로운 줄 추가
                 

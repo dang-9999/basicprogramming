@@ -295,8 +295,8 @@ public class Main {
 		if(filepath == "userFile.txt") {
 			if(index.length == 0) return 1;
 			if(index.length == 3) {
-				//전화번호, 쿠폰 개수(수량), 누적 금액(메뉴 가격) 문법 검사 함수 호출
-				if(isPhoneNumber(index[0]) == 0 || isOrderQuantity(index[1]) == 0 || isMenuPrice(index[2]) == 0)
+				//전화번호, 누적 금액(메뉴 가격), 쿠폰 개수(수량) 문법 검사 함수 호출
+				if(isPhoneNumber(index[0]) == 0 || isMenuPrice(index[1]) == 0 || isOrderQuantity(index[2]) == 0)
 					return 0;
 				else 
 					return 1;
