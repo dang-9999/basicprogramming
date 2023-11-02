@@ -55,7 +55,7 @@ public class Main {
 			return;
 		}
 
-
+		
 		
 
 		while(systemOP){
@@ -296,7 +296,7 @@ public class Main {
 			if(index.length == 0) return 1;
 			if(index.length == 3) {
 				//전화번호, 쿠폰 개수(수량), 누적 금액(메뉴 가격) 문법 검사 함수 호출
-				if(isMenuName(index[0]) == 0 || isOrderQuantity(index[1]) == 0 || isMenuPrice(index[2]) == 0)
+				if(isPhoneNumber(index[0]) == 0 || isOrderQuantity(index[1]) == 0 || isMenuPrice(index[2]) == 0)
 					return 0;
 				else 
 					return 1;
