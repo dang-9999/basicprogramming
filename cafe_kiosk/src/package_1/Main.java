@@ -32,11 +32,14 @@ public class Main {
 		if(createFile(menuFile) == -1) return;
 		if(createFile(logFile) == -1) return;
 		//끝	
-		
+		System.out.println("무결성확인)파일경로 확인완료");
 		//파일 무결성 확인 시작
 		if(ReadFile(userFilePath) <= 0) return;
+		System.out.println("무결성확인)유저파일 확인완료");		
 		if(ReadFile(menuFilePath) <= 0) return;
+		System.out.println("무결성확인)메뉴파일 확인완료");
 		if(ReadFile(logFilePath) <= 0) return;
+		System.out.println("무결성확인)로그파일 확인완료");
 		//파일 무결성 확인 끝
 		System.out.println("파일 무결성임!!!!");
 
@@ -44,19 +47,13 @@ public class Main {
 
 		//시간입력프롬프트
 		//시스템 시간 입력
-		TimeManager timeManager;
-		System.out.println("시스템 시간을 입력해주세요. (예시: MMdd/HHmmss)");
-		String initTime = scanner.nextLine();
-		try{
-			timeManager = new TimeManager(initTime);
-		} catch (ParseException e) {
-			System.out.println("오류)시스템시간오류");
-			scanner.close();
-			return;
+		TimeManager timeManager= new TimeManager();
+		while (true) {
+			System.out.println("시스템 시간을 입력해주세요. (예시: MMdd/HHmmss)");
+			String initTime = scanner.nextLine();
+			if (timeManager.setInitTime(initTime) == 0)
+				break;
 		}
-
-		
-		
 
 		while(systemOP){
 
