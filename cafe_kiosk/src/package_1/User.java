@@ -38,7 +38,7 @@ public class User {
     public static int findPhoneNum(String phoneNum) {
         try {
             // FileReader와 BufferedReader 객체 생성
-            FileReader fileReader = new FileReader("MemberInfo.txt");
+            FileReader fileReader = new FileReader("userFile.txt");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             String line;
