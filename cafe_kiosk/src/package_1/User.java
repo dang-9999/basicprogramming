@@ -88,7 +88,7 @@ public class User {
             // 회원 정보가 없는 경우
             try {
                 // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
-                FileWriter fileWriter = new FileWriter("MemberInfo.txt", true);
+                FileWriter fileWriter = new FileWriter("userFile.txt", true);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 // 회원 정보를 파일의 마지막 다음 행에 추가
