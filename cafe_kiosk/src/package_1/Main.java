@@ -124,16 +124,27 @@ public class Main {
 						{
 							boolean Admin2 = true;
 							while(Admin2){
-								try {
+								
 								System.out.println("1.판매로그확인\n2.메뉴 추가\n3.메뉴 삭제\n4.메뉴 수량 조정\n5.관리자 모드 종료");
-								int adminChoice = scanner.nextInt();
-								Admin admin = new Admin();
+								String adminChoice = scanner.nextLine().trim();
+//								String[] ind = adminChoice.replaceAll("\\s+"," ").split(" ");
+						        Admin admin = new Admin();
 								switch(adminChoice) {
-								case 1 -> admin.printFile(); //판매로그
-								case 2 -> //메뉴 추가
+								case "1" -> //판매로그
+								{
+									String enter = scanner.nextLine();
+									if(enter.isBlank()) {
+										System.out.println("-판매로그-");
+										admin.printFile();
+										System.out.println();
+									}
+									else {
+										System.out.println("규칙에 어긋나는 키 입력입니다.");
+									}
+								}
+								case "2" -> //메뉴 추가
 								 {
 									while(true) {
-										scanner.nextLine();
 										admin.printMenu();
 										System.out.println("추가하실 메뉴의 이름을 입력하세요");
 										System.out.print("추가하실 메뉴: ");
@@ -159,10 +170,9 @@ public class Main {
 										}
 									}
 								 } 
-								case 3 -> //메뉴 삭제
+								case "3" -> //메뉴 삭제
 								 {
 									while(true) {
-										scanner.nextLine();
 										admin.printMenu();
 										System.out.println("삭제하실 메뉴의 이름을 입력하세요");
 										System.out.print("삭제하실 메뉴: ");
@@ -177,10 +187,9 @@ public class Main {
 										}
 									}
 								 }
-								case 4 -> //메뉴 수량 조정
+								case "4" -> //메뉴 수량 조정
 								 {
 									while(true) {
-										scanner.nextLine();
 										System.out.println("품절 표시 및 수량을 변경할 메뉴를 입력하세요.");
 										System.out.print("메뉴 이름: ");
 										String menu = scanner.nextLine();
@@ -206,18 +215,14 @@ public class Main {
 										}
 									}
 								 }
-								case 5 -> 
+								case "5" -> 
 								 {
-									Admin2 = false; 
-									scanner.nextLine();
+									Admin2 = false;
 									System.out.println("관리자모드를 종료합니다.\n\n"); //관리자 모드 종료
 								 }
 								default -> System.out.println("규칙에 어긋나는 키 입력입니다."); //예외
 								}
-								} catch(InputMismatchException e) {
-									System.out.println("규칙에 어긋나는 키 입력입니다."); //예외
-									scanner.nextLine();
-								}
+								
 							}
 							Admin1 = false;
 						}
