@@ -363,9 +363,9 @@ public class Main {
             }
         }
         
-        // 공백을 포함하는 문자열은 false
-        if (menuName.matches(".*\\s+.*")) {
-            return 0;
+        // 탭이나 개행이 없어야 함
+        if (orderQuantity.contains("\t") || orderQuantity.contains("\n")) {
+        	return 0;
         }
         
         // 모든 조건을 만족하면 유효한 메뉴 이름
