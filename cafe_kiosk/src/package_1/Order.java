@@ -60,6 +60,8 @@ public class Order {
 					if (name.equals(uN)) {
 						this.user.setPrice(Integer.parseInt(parts[2]));
 						this.user.setQuantity(Integer.parseInt(parts[1]));
+						System.out.println("기존유저");
+						break;
 					}
 				}
 			}
@@ -201,9 +203,9 @@ public class Order {
 				if (parts.length == 1) {
 					try{
 						useCoupon = Integer.parseInt(parts[0]);
-						if(MaxUsableCoupan>=useCoupon && useCoupon>=0) break;
+						if(MaxUsableCoupan>=useCoupon && useCoupon>=0) break; //사용할쿠폰이 최대사용가능개수이하, 0이상일경우
 					} catch (NumberFormatException e) {
-						if (parts[0] == "")
+						if (parts[0] == "") //취소입력
 							return 0;
 					}
 				}
