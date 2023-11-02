@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
 public class Main {
 	
 	public static void main(String[] args) {
-
-		Scanner scanner = new Scanner(System.in);
 		boolean systemOP = true;
 
 		
@@ -42,6 +40,7 @@ public class Main {
 		//파일 무결성 확인 끝
 		System.out.println("파일 무결성임!!!!");
 
+		Scanner scanner = new Scanner(System.in);
 
 		//시간입력프롬프트
 		//시스템 시간 입력
@@ -52,6 +51,7 @@ public class Main {
 			timeManager = new TimeManager(initTime);
 		} catch (ParseException e) {
 			System.out.println("오류)시스템시간오류");
+			scanner.close();
 			return;
 		}
 
@@ -229,7 +229,7 @@ public class Main {
 				// 사용자가 exit를 대답, 종료한 경우
 				System.out.println("이용해주셔서 감사합니다.");
 				systemOP = false;
-
+				scanner.close();
 				break;
 			} else {
 				// 오류 발생

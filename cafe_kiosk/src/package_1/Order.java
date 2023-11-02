@@ -13,9 +13,9 @@ import java.util.Scanner;
 public class Order {
 	private List<Menu> menuItems;
 	private List<Menu> orderItems;
-	private String menuFilePath = "menuFile.txt";
-	private String logFilePath = "logFile.txt";
-	private String userFilePath = "userFile.txt";
+	private final String menuFilePath = "menuFile.txt";
+	private final String logFilePath = "logFile.txt";
+	private final String userFilePath = "userFile.txt";
 	private Menu user;
 	private TimeManager tm;
 	private Scanner scan = new Scanner(System.in);

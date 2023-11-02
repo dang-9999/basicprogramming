@@ -10,7 +10,8 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class User {
-
+    
+    static String filename = "userFile.txt"; // 파일 이름
     public static int askInfo(){
 
         Scanner scanner = new Scanner(System.in);
@@ -40,13 +41,7 @@ public class User {
 		List<String[]> userList = new ArrayList<>();
 
         try {
-<<<<<<< HEAD
-            String filename = "userFile.txt"; // 파일 이름
             FileReader fileReader = new FileReader(filename);
-=======
-            // FileReader와 BufferedReader 객체 생성
-            FileReader fileReader = new FileReader("userFile.txt");
->>>>>>> 034661b658bc65275dbe1493c59314438c9f53e9
             BufferedReader bufferedReader = new BufferedReader(fileReader);
 
             String line;
@@ -129,11 +124,7 @@ public class User {
             // 회원 정보가 없는 경우
             try {
                 // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
-<<<<<<< HEAD
-                FileWriter fileWriter = new FileWriter("userFile.txt");
-=======
-                FileWriter fileWriter = new FileWriter("userFile.txt", true);
->>>>>>> 034661b658bc65275dbe1493c59314438c9f53e9
+                FileWriter fileWriter = new FileWriter(filename);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
                 // 메뉴 항목 추가
