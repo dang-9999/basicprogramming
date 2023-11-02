@@ -360,7 +360,7 @@ public class Main {
         }
         
         // 탭이나 개행이 없어야 함
-        if (orderQuantity.contains("\t") || orderQuantity.contains("\n")) {
+        if (menuName.contains("\t") || menuName.contains("\n")) {
         	return 0;
         }
         
