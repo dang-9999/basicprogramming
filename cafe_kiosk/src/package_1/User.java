@@ -27,11 +27,11 @@ public class User {
         if ("yes".equals(answer)) {
             return 1;
         } else if ("no".equals(answer)) {
-            return 2;
+        	return 2;
         } else if ("admin".equals(answer)) {
-            return 3;
+        	return 3;
         } else if ("exit".equals(answer)){
-            return 4;
+        	return 4;
         }else {
             return 0; //오류발생
         }
@@ -80,9 +80,8 @@ public class User {
 			String userNum = userInfo[0];
 
 			if (userNum.equals(phoneNum)) {
-
 				//유저 정보가 존재함 & 탈출
-				found = true; 
+				found = true;
                 return 1;
             }
 		}
@@ -109,16 +108,8 @@ public class User {
 
         // 이미 기록이 있는지 확인
         result = findPhoneNum(phoneNum);
-
         if (result == 1) {
             // 이미 회원 정보가 있는 경우
-
-
-
-
-
-
-
             return -1;
         } else if (result == -1) {
             // 회원 정보가 없는 경우
@@ -152,6 +143,64 @@ public class User {
         }
 
         return 0; // 다른 상황
+    }
+    
+    public static int addPhoneNum2(String[] phone) {  	
+    	int result = 0;
+  
+    	if(!isValidPhoneNum(phone[0]) || !isValidPhoneNum(phone[1])){	//전화번호 문법규칙 검사
+    		System.out.println("규칙에 어긋나는 키 입력입니다.");
+    		return 0;
+    	}
+    	result = findPhoneNum(phone[0]);	//기존 회원인지 검사 
+    	if(result == 1) {
+    		result = findPhoneNum(phone[1]);	//회원 중복 여부
+    		if(result == 1) {	//회원 존재
+    			System.out.println("이미 같은 번호로 등록된 회원이있습니다.");
+    			return 0;
+    		}
+    		else if(result == -1) {	//회원 정보 변경
+    			List<String[]> userlist = fileTolist();
+    			
+    			String price = null;
+    			String coupon = null;
+    			for(String[] user : userlist) {
+    				if(user[0].equals(phone[0])) {
+    					user[0] = phone[1];
+    					price = user[1];
+    					coupon = user[2];
+    				}
+    			}
+    			
+    			try {
+    				FileWriter filewriter = new FileWriter(filename);
+    				BufferedWriter bufferedwriter = new BufferedWriter(filewriter);
+    				
+    				for(String[] user : userlist) {
+    					String line = String.join(" ", user);
+    					bufferedwriter.write(line);
+    					bufferedwriter.newLine();
+    				}
+    				
+    				bufferedwriter.close();
+    				filewriter.close();
+    				
+    				System.out.println("누적 결제액 "+price+"원과 쿠폰 "+coupon+"개가 이전되었습니다.");
+    				
+    			} catch(IOException e) {
+    				e.printStackTrace();
+    				return 0;
+    			}
+                
+    			return -1;
+    		}
+    	}
+    	else if(result == -1) {	//기존 회원 아님
+    		System.out.println("존재하지 않는 회원입니다.");
+    		return 0;
+    	}
+    	
+		return result;
     }
 
     public static boolean isValidPhoneNum(String phoneNum) {

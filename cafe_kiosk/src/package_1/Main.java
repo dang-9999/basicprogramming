@@ -3,9 +3,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
+//import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,36 +62,36 @@ public class Main {
 			if (infoChoice == 1) {
 				// 사용자가 yes를 대답
 				// 전화번호 입력 프롬프트 출력
-
-				System.out.println("전화번호를 입력해주세요. (예시: 01012345678)");
-				String phoneNum = scanner.nextLine();
-				int result = User.addPhoneNum(phoneNum);
-
-				if (result == 1){
-					//number와 phoneNum과 일치하는 정보가 있다면
-					//Order 메소드 호출
-					Order order = new Order(timeManager, phoneNum);
-					//run()
-					order.run();
-
-
+				while(true) {
+					System.out.println("전화번호를 입력해주세요. (예시: 01012345678)");
+					System.out.println("전화번호를 변경하려면 기존 번호와 변경할 전화번호를 모두 적어주세요. (예시: (기존 번호) (빈칸) (변경할 번호))");
+					String phoneNum = scanner.nextLine().trim();
+					String[] phoneArray = phoneNum.split("\\s+");
+					int result = 0;
+					if(phoneArray.length == 1)
+						result = User.addPhoneNum(phoneNum);
+					else if(phoneArray.length == 2)
+						result = User.addPhoneNum2(phoneArray);
 					
-				} else if(result ==-1 ){
-					//number와 phoneNum과 일치하는 정보가 없다면
-					//addPhoneNum
-					//Order 메소드 호출
-					Order order = new Order(timeManager, phoneNum);
-					//run()
-					order.run();
-
-					
-
-				} else {
-					//오류가 발생한다면
-					System.out.println("오류가 발생하였습니다. ");
-				
+					if (result == 1){
+						//number와 phoneNum과 일치하는 정보가 있다면
+						//Order 메소드 호출
+						Order order = new Order(timeManager, phoneNum);
+						//run()
+						order.run();
+						break;
+					} else if(result ==-1 ){
+						//number와 phoneNum과 일치하는 정보가 없다면
+						//addPhoneNum
+						//Order 메소드 호출
+						Order order = new Order(timeManager, phoneNum);
+						//run()
+						order.run();
+						break;
+					} else {
+						System.out.println("규칙에 어긋나는 키 입력입니다.");
+					}
 				}
-				continue;
 
 			} else if (infoChoice == 2) {
 				// 사용자가 no를 대답
@@ -263,7 +262,7 @@ public class Main {
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
 			while((line = bufferedReader.readLine()) != null) {
-				if(checkLine(filepath, line) == 0) return 0; 
+				if(checkLine(filepath, line) == 0) {bufferedReader.close(); return 0;} 
 			}
 			bufferedReader.close();
 			return 1;
