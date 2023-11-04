@@ -57,4 +57,11 @@ public class TimeManager {
         // 시간을 원하는 형식으로 포맷팅하여 반환
         return dateFormat.format(currentTimeDate);
 	}
+	public int getFlowTime() {
+		// 현재 시간을 가져와서 initTime으로부터 경과한 밀리초를 계산
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - startTime;
+
+		return (int) elapsedTime;
+	}
 }

@@ -69,12 +69,6 @@ public class Order {
 		}
 	}
 	
-	public void run() {
-		while(true) {
-			showMenus();
-			if(getInput()==1) break;
-		}
-	}
 	private void showMenus() {
 		System.out.println("====================");
 		System.out.println("메뉴\t가격\t메뉴잔량");
@@ -97,7 +91,8 @@ public class Order {
 		}
 		System.out.println("메뉴를 주문하려면 \"{메뉴이름} {수량}\", 결제하려면 \"결제하기\"를 입력해주세요");
 	}
-	private int getInput() {
+	public int run() {
+		showMenus();
 		System.out.print(">");
 		String userInput = this.scan.nextLine();
         String[] parts = userInput.trim().split("\\s+");
@@ -267,7 +262,7 @@ public class Order {
             fileWriter = new FileWriter(userFilePath);
             bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(userFileCont.toString()); //기존파일내용
-			System.out.println(user.toString()+"\n");
+			// System.out.println(user.toString()+"\n");
             bufferedWriter.write(user.toString()+"\n");			//추가되는내용
 			bufferedWriter.close();
 			fileWriter.close();

@@ -80,7 +80,7 @@ public class Main {
 						//Order 메소드 호출
 						Order order = new Order(timeManager, phoneNum);
 						//run()
-						order.run();
+						while(order.run()!=1);
 						break;
 					} else if(result ==-1 ){
 						//number와 phoneNum과 일치하는 정보가 없다면
@@ -88,7 +88,7 @@ public class Main {
 						//Order 메소드 호출
 						Order order = new Order(timeManager, phoneNum);
 						//run()
-						order.run();
+						while(order.run()!=1);
 						break;
 					} else {
 						System.out.println("규칙에 어긋나는 키 입력입니다.");
@@ -100,7 +100,7 @@ public class Main {
 				//Order 메소드 호출
 				Order order = new Order(timeManager);
 				//run()
-				order.run();
+				while(order.run()!=1);
 			
 
 
