@@ -204,7 +204,12 @@ public class Order {
 					try{
 						useCoupon = Integer.parseInt(parts[0]);
 						//사용할쿠폰이 최대사용가능개수, 보유개수이하, 0이상일경우 적절한 입력
-						if(MaxUsableCoupan>=useCoupon && cntCouponHas>=useCoupon&& useCoupon>=0) break;
+						if(MaxUsableCoupan>=useCoupon && cntCouponHas>=useCoupon&& useCoupon>0){
+							System.out.print("쿠폰적용개수: ");System.out.print(useCoupon);
+							System.out.print(" 쿠폰적용후 결제금액: ");System.out.println(totalprice-=useCoupon*COUPONPRICE);
+							break;
+						}
+						if(useCoupon==0) break;
 					} catch (NumberFormatException e) {
 						if (parts[0] == "") //취소입력
 							return 0;
@@ -214,8 +219,6 @@ public class Order {
 			}
 		}
 		//결제방법 선택
-		System.out.print("쿠폰적용개수: ");System.out.print(useCoupon);
-		System.out.print(" 쿠폰적용후 결제금액: ");System.out.println(totalprice-=useCoupon*COUPONPRICE);
 		while (true) {
 			System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
 			String userInput = this.scan.nextLine().trim();
