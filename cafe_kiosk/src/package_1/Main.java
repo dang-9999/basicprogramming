@@ -70,10 +70,11 @@ public class Main {
 					int result = 0;
 					if(phoneArray.length == 1)
 						result = User.addPhoneNum(phoneNum);
-					else if(phoneArray.length == 2)
+					else if(phoneArray.length == 2){
 						result = User.modifyPhoneNum(phoneArray);
 						if (result == -1 ){continue;} // 중복된 전화번호가 있거나 번호가 없거나 다시 작성하도록 함.
 						else if(result == 0 ){ System.out.println("규칙에 어긋나는 키 입력입니다."); continue; }
+					}
 					
 					if (result == 1){
 						//number와 phoneNum과 일치하는 정보가 있다면
@@ -239,7 +240,7 @@ public class Main {
 			}
 		}
 	}
-	
+
 	//파일 생성하는 함수
 	public static int createFile(File file) { //정상결과 0, 오류 -1
 		if(!file.exists()) {
