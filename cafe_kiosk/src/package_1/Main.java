@@ -72,6 +72,7 @@ public class Main {
 						result = User.addPhoneNum(phoneNum);
 					else if(phoneArray.length == 2){
 						result = User.modifyPhoneNum(phoneArray);
+						phoneNum = phoneArray[1];
 						if (result == -1 ){continue;} // 중복된 전화번호가 있거나 번호가 없거나 다시 작성하도록 함.
 						else if(result == 0 ){ System.out.println("규칙에 어긋나는 키 입력입니다."); continue; }
 					}

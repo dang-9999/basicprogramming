@@ -96,7 +96,7 @@ public class Order {
 		System.out.print(">");
 		String userInput = this.scan.nextLine();
         String[] parts = userInput.trim().split("\\s+");
-    	System.out.println(parts.length);
+    	// System.out.println(parts.length);
         switch(parts.length) {
         case 1:
         	if(parts[0].equals("결제하기"))
