@@ -101,10 +101,8 @@ public class Main {
 				Order order = new Order(timeManager);
 				//run()
 				while(order.run()!=1);
-			
 
-
-			systemOP = false;
+				continue; // 다시 결제모드로 돌아감.
 
 			} else if (infoChoice == 3) {
 				// 사용자가 admin을 대답, 
@@ -240,10 +238,8 @@ public class Main {
 				continue;
 			}
 		}
-
 	}
-
-
+	
 	//파일 생성하는 함수
 	public static int createFile(File file) { //정상결과 0, 오류 -1
 		if(!file.exists()) {
