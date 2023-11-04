@@ -214,6 +214,8 @@ public class Order {
 			}
 		}
 		//결제방법 선택
+		System.out.print("쿠폰적용개수: ");System.out.print(useCoupon);
+		System.out.print(" 쿠폰적용후 결제금액: ");System.out.println(totalprice-=useCoupon*COUPONPRICE);
 		while (true) {
 			System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
 			String userInput = this.scan.nextLine().trim();
@@ -227,7 +229,7 @@ public class Order {
 		}
 		//쿠폰사용 적용하고 적용내역 출력하기
 		this.user.setQuantity(this.user.getQuantity() +(this.user.getPrice()%COUPONPROVIDE+totalprice)/COUPONPROVIDE-  useCoupon);
-		this.user.setPrice(this.user.getPrice()+((totalprice>useCoupon*COUPONPRICE)?totalprice-useCoupon*COUPONPRICE:0));
+		this.user.setPrice(this.user.getPrice()+((totalprice>useCoupon*COUPONPRICE)?totalprice:0));
 		//로그내용 작성 및 메뉴리스트 수정
 		String log = "";
 		String timeStr = this.tm.getTimeNow();
