@@ -19,7 +19,8 @@ public class Order {
 	private Menu user;
 	private TimeManager tm;
 	private Scanner scan = new Scanner(System.in);
-	private int COUPONPRICE = 1000;
+	private final int COUPONPRICE = 1000;
+	private final int COUPONPROVIDE = COUPONPRICE * 10;
 	
 	public Order(TimeManager tm) {
 		this.tm = tm;
@@ -181,7 +182,8 @@ public class Order {
 		System.out.print(totalprice);
 		System.out.println("원입니다.");
 		//쿠폰보유확인
-		int cntCouponHas = this.user.getPrice()/(COUPONPRICE * 10) - this.user.getQuantity();
+		// int cntCouponHas = this.user.getPrice()/COUPONPROVIDE - this.user.getQuantity();
+		int cntCouponHas = this.user.getQuantity();
 		if (cntCouponHas<0){
 			System.out.println("오류)쿠폰개수 오류 결제에 실패했습니다.");
 			return 1;
@@ -224,7 +226,7 @@ public class Order {
 			System.out.println("알림)적절한 입력이 아닙니다.");
 		}
 		//쿠폰사용 적용하고 적용내역 출력하기
-		this.user.setQuantity(this.user.getQuantity() + useCoupon);
+		this.user.setQuantity(this.user.getQuantity() +(this.user.getPrice()%COUPONPROVIDE+totalprice)/COUPONPROVIDE-  useCoupon);
 		this.user.setPrice(this.user.getPrice()+((totalprice>useCoupon*COUPONPRICE)?totalprice-useCoupon*COUPONPRICE:0));
 		//로그내용 작성 및 메뉴리스트 수정
 		String log = "";

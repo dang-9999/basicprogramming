@@ -149,7 +149,7 @@ public class User {
     	int result = 0;
   
     	if(!isValidPhoneNum(phone[0]) || !isValidPhoneNum(phone[1])){	//전화번호 문법규칙 검사
-    		System.out.println("규칙에 어긋나는 키 입력입니다.");
+    		// System.out.println("규칙에 어긋나는 키 입력입니다.");
     		return 0;
     	}
     	result = findPhoneNum(phone[0]);	//기존 회원인지 검사 

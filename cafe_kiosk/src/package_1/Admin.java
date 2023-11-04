@@ -24,7 +24,7 @@ public class Admin {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 // 공백으로 분할하여 String 배열로 저장
-                String[] parts = line.split(" ");
+                String[] parts = line.trim().split("\\s+");
                 menuList.add(parts);
             }
 
