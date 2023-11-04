@@ -145,7 +145,7 @@ public class User {
         return 0; // 다른 상황
     }
     
-    public static int addPhoneNum2(String[] phone) {  	
+    public static int modifyPhoneNum(String[] phone) {  	
     	int result = 0;
   
     	if(!isValidPhoneNum(phone[0]) || !isValidPhoneNum(phone[1])){	//전화번호 문법규칙 검사
@@ -157,7 +157,7 @@ public class User {
     		result = findPhoneNum(phone[1]);	//회원 중복 여부
     		if(result == 1) {	//회원 존재
     			System.out.println("이미 같은 번호로 등록된 회원이있습니다.");
-    			return 0;
+    			return -1;
     		}
     		else if(result == -1) {	//회원 정보 변경
     			List<String[]> userlist = fileTolist();
@@ -186,21 +186,21 @@ public class User {
     				filewriter.close();
     				
     				System.out.println("누적 결제액 "+price+"원과 쿠폰 "+coupon+"개가 이전되었습니다.");
+                    return 1;
     				
     			} catch(IOException e) {
     				e.printStackTrace();
     				return 0;
     			}
-                
-    			return -1;
+            
     		}
     	}
     	else if(result == -1) {	//기존 회원 아님
     		System.out.println("존재하지 않는 회원입니다.");
     		return 0;
     	}
-    	
-		return result;
+
+        return 0;
     }
 
     public static boolean isValidPhoneNum(String phoneNum) {
