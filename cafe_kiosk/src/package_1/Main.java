@@ -66,7 +66,7 @@ public class Main {
 					System.out.println("전화번호를 입력해주세요. (예시: 01012345678)");
 					System.out.println("전화번호를 변경하려면 기존 번호와 변경할 전화번호를 모두 적어주세요. (예시: (기존 번호) (빈칸) (변경할 번호))");
 					String phoneNum = scanner.nextLine().trim();
-					String[] phoneArray = phoneNum.split("\\s+");
+					String[] phoneArray = phoneNum.trim().split("\\s+");
 					int result = 0;
 					if(phoneArray.length == 1)
 						result = User.addPhoneNum(phoneNum);

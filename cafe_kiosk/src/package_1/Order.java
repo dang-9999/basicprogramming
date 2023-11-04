@@ -182,13 +182,16 @@ public class Order {
 		System.out.println("원입니다.");
 		//쿠폰보유확인
 		int cntCouponHas = this.user.getPrice()/(COUPONPRICE * 10) - this.user.getQuantity();
-		if (cntCouponHas<0) System.out.println("쿠폰개수 오류");
+		if (cntCouponHas<0){
+			System.out.println("오류)쿠폰개수 오류 결제에 실패했습니다.");
+			return 1;
+		}
 		int useCoupon = 0;
+		System.out.print("보유한쿠폰개수: ");
+		System.out.println(cntCouponHas);
 		if(cntCouponHas>0 && totalprice > 0){ //쿠폰개수가 0이상, 쿠폰으로 결제할 금액이 존재하는지.
 			while (true) {
-				System.out.print("쿠폰이 사용가능합니다. 사용할 쿠폰개수를 입력해주세요.\n보유한쿠폰개수: ");
-				System.out.print(cntCouponHas);
-				System.out.print("\t최대사용가능한 쿠폰개수: ");
+				System.out.print("쿠폰이 사용가능합니다. 사용할 쿠폰개수를 입력해주세요.(공백>취소하기)\n최대사용가능한 쿠폰개수: ");
 				int MaxUsableCoupan = totalprice / COUPONPRICE + ((totalprice % COUPONPRICE == 0) ? 0 : 1);
 				System.out.print(MaxUsableCoupan);
 				System.out.print("\n>");

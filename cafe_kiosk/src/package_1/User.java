@@ -47,7 +47,7 @@ public class User {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 // 공백으로 분할하여 String 배열로 저장
-                String[] parts = line.split(" ");
+                String[] parts = line.trim().split("\\s+");
                 userList.add(parts);
             }
 
@@ -78,7 +78,7 @@ public class User {
 		//반복문을 통해 list를 하나씩 꺼냄
 		for (String[] userInfo : userList){
 			String userNum = userInfo[0];
-
+            
 			if (userNum.equals(phoneNum)) {
 				//유저 정보가 존재함 & 탈출
 				found = true;
