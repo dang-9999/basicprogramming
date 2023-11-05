@@ -102,7 +102,6 @@ public class User {
 
         // 입력된 번호가 문법적으로 옳은지 확인
         if (!isValidPhoneNum(phoneNum)) {
-            System.out.println("규칙에 어긋나는 키 입력 입니다.");
             return 0;
         }
 
