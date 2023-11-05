@@ -414,7 +414,8 @@ public class Main {
 	public static int AdminLogin(String password) {
 		final String PASSWORD = "adminA12!";
 		
-		String[] pwArray = password.trim().split("\\s+");
+		password = password.trim();
+		String[] pwArray = password.split("\\s+");
 		
 		if(password.length() < 6 || password.length() > 12 || pwArray.length != 1)
 			return -1;
