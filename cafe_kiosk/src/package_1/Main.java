@@ -48,7 +48,7 @@ public class Main {
 		//시스템 시간 입력
 		TimeManager timeManager= new TimeManager();
 		while (true) {
-			System.out.println("프로그램 시작 전에\n현재 시각을 입력해 주세요.\n10월 5일 14시 47분 00초->1005/144700");
+			System.out.print("프로그램 시작 시각을 입력해 주세요.\n(ex: 10월 5일 14시 47분 00초->1005/144700\n>");
 			String initTime = scanner.nextLine();
 			if (timeManager.setInitTime(initTime) == 0)
 				break;

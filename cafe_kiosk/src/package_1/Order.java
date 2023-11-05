@@ -246,36 +246,48 @@ public class Order {
 				}
 			}
 		}
+		//파일 관리
 		try {
-			//메뉴파일 작성
+			FileWriter fileWriter;
+			FileReader fileReader;
+			BufferedWriter bufferedWriter;
+			BufferedReader bufferedReader;
 			String line = "";
+			//메뉴파일 작성
 			for(Menu menu: menuItems) {
 				line += menu.toString()+"\n";
 			}
-			FileWriter fileWriter = new FileWriter(menuFilePath);
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			fileWriter = new FileWriter(menuFilePath);
+			bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(line);
 			bufferedWriter.close();
+
+
 			
 			//회원정보 수정하기
-			FileReader fileReader = new FileReader(userFilePath);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            StringBuilder userFileCont = new StringBuilder();
-			while ((line = bufferedReader.readLine()) != null) {
-				if (line.trim().split("\\s+")[0].equals(user.getName())) {
-					continue;
+			if(!this.user.getName().equals("-")){
+				fileReader = new FileReader(userFilePath);
+				bufferedReader = new BufferedReader(fileReader);
+				StringBuilder userFileCont = new StringBuilder();
+				while ((line = bufferedReader.readLine()) != null) {
+					if (line.trim().split("\\s+")[0].equals(user.getName())) {
+						continue;
+					}
+					userFileCont.append(line).append("\n");
 				}
-                userFileCont.append(line).append("\n");
-            }
-			bufferedReader.close();
+				bufferedReader.close();
+				//
+				fileWriter = new FileWriter(userFilePath);
+				bufferedWriter = new BufferedWriter(fileWriter);
+				bufferedWriter.write(userFileCont.toString()); //기존파일내용
+				// System.out.println(user.toString()+"\n");
+				bufferedWriter.write(user.toString()+"\n");			//추가되는내용
+				bufferedWriter.close();
+				fileWriter.close();
+			}
 			
-            fileWriter = new FileWriter(userFilePath);
-            bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(userFileCont.toString()); //기존파일내용
-			// System.out.println(user.toString()+"\n");
-            bufferedWriter.write(user.toString()+"\n");			//추가되는내용
-			bufferedWriter.close();
-			fileWriter.close();
+			
+            
 
             // 로그파일 읽기
             fileReader = new FileReader(logFilePath);
