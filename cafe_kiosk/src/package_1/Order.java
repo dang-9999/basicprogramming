@@ -200,9 +200,9 @@ public class Order {
 				String userInput = this.scan.nextLine();
 				String[] parts = userInput.trim().split("\\s+");
 				
-				if (parts.length == 1) {
-					try{
-						useCoupon = Integer.parseInt(parts[0]);
+				try{
+					useCoupon = Integer.parseInt(parts[0]);
+					if (parts.length == 1) {
 						//사용할쿠폰이 최대사용가능개수, 보유개수이하, 0이상일경우 적절한 입력
 						if(MaxUsableCoupan>=useCoupon && cntCouponHas>=useCoupon&& useCoupon>0){
 							System.out.print("쿠폰적용개수: ");System.out.print(useCoupon);
@@ -210,10 +210,12 @@ public class Order {
 							break;
 						}
 						if(useCoupon==0) break;
-					} catch (NumberFormatException e) {
-						if (parts[0] == "") //취소입력
-							return 0;
 					}
+				} catch (NumberFormatException e) {
+					if (parts[0] == "") //취소입력
+						return 0;
+					System.out.println("규칙에 어긋나는 키 입력입니다.");
+					continue;
 				}
 				System.out.println("올바르지 않은쿠폰 수량 입력입니다.");
 			}
