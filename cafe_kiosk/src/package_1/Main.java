@@ -163,7 +163,7 @@ public class Main {
 											
 											int result = admin.addMenu(menu, iprice);
 											if(result == 1) {System.out.println("메뉴를 추가했습니다("+menu+")."); break;}
-											if(result == -1) {System.out.println("이미 존재하는 메뉴입니다."); break;}
+											if(result == -1) {System.out.println("규칙에 어긋나는 키 입력입니다."); break;}
 											if(result == 0) {System.out.println("오류 발생"); break;}
 										}
 									}
