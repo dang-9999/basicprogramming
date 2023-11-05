@@ -215,7 +215,7 @@ public class Order {
 							return 0;
 					}
 				}
-				System.out.println("알림)적절한 입력이 아닙니다.");
+				System.out.println("올바르지 않은쿠폰 수량 입력입니다.");
 			}
 		}
 		//결제방법 선택
@@ -228,7 +228,7 @@ public class Order {
 				break;
 			else if (userInput.equals("현금"))
 				break;
-			System.out.println("알림)적절한 입력이 아닙니다.");
+			System.out.println("\"카드\"혹은 \"현금\"으로 입력해주세요.");
 		}
 		//쿠폰사용 적용하고 적용내역 출력하기
 		this.user.setQuantity(this.user.getQuantity() +(this.user.getPrice()%COUPONPROVIDE+totalprice)/COUPONPROVIDE-  useCoupon);
