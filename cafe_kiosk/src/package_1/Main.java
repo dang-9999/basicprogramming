@@ -146,14 +146,14 @@ public class Main {
 										admin.printMenu();
 										System.out.println("추가하실 메뉴의 이름을 입력하세요");
 										System.out.print("추가하실 메뉴: ");
-										String menu = scanner.nextLine();
+										String menu = scanner.nextLine().trim();
 										if(menu.isBlank()) {System.out.println("실행이 취소되었습니다."); break;}
 										else if(isMenuName(menu) == 0) System.out.println("규칙에 어긋나는 키 입력입니다.");
 										else {
 											String price;
 											do {
 											System.out.print("추가하실 메뉴의 가격을 입력하세요.\n가격 : ");
-											price = scanner.nextLine();
+											price = scanner.nextLine().trim();
 											if(price.isBlank()) {System.out.println("실행이 취소되었습니다."); break;}
 											else if(isMenuPrice(price) == 0) System.out.println("메뉴 가격(숫자)을 입력해주세요.");
 											} while(isMenuPrice(price) == 0);
@@ -174,7 +174,7 @@ public class Main {
 										admin.printMenu();
 										System.out.println("삭제하실 메뉴의 이름을 입력하세요");
 										System.out.print("삭제하실 메뉴: ");
-										String menu = scanner.nextLine();
+										String menu = scanner.nextLine().trim();
 										if(menu.isBlank()) {System.out.println("실행이 취소되었습니다."); break;}
 										else if(isMenuName(menu) == 0) System.out.println("규칙에 어긋나는 키 입력입니다.");
 										else {
@@ -190,7 +190,7 @@ public class Main {
 									while(true) {
 										System.out.println("품절 표시 및 수량을 변경할 메뉴를 입력하세요.");
 										System.out.print("메뉴 이름: ");
-										String menu = scanner.nextLine();
+										String menu = scanner.nextLine().trim();
 										if(menu.isBlank()) {System.out.println("실행이 취소되었습니다."); break;}
 										else if(isMenuName(menu) == 0) System.out.println("규칙에 어긋나는 키 입력입니다.");
 										else {
@@ -200,7 +200,7 @@ public class Main {
 											System.out.println("품절로 변경을 원한다면 0을 입력해주세요.");
 											System.out.println("메뉴 이름: "+menu);
 											System.out.print("잔여 수량 변경: ");
-											quantity = scanner.nextLine();
+											quantity = scanner.nextLine().trim();
 											if(isOrderQuantity(quantity) == 0) System.out.println("규칙에 어긋나는 키 입력입니다.");
 											} while(isOrderQuantity(quantity) == 0);
 											
