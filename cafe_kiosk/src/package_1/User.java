@@ -18,7 +18,7 @@ public class User {
 
 
         System.out.println("결제 시 회원 정보를 입력하시겠습니까?\n1.회원정보 입력으로 구매시: yes \n2.회원정보 미입력으로 구매시: no  \n3.구매화면에서 나갈시: exit");
-        String answer = scanner.nextLine();
+        String answer = scanner.nextLine().trim();
 
         // 문자열을 소문자로 변환
         answer = answer.toLowerCase();
