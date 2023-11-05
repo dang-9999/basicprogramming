@@ -217,7 +217,7 @@ public class Order {
 					System.out.println("규칙에 어긋나는 키 입력입니다.");
 					continue;
 				}
-				System.out.println("올바르지 않은쿠폰 수량 입력입니다.");
+				System.out.println("올바르지 않은 쿠폰 수량 입력입니다.");
 			}
 		}
 		//결제방법 선택
