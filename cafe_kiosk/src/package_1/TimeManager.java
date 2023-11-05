@@ -18,6 +18,9 @@ public class TimeManager {
 
 	public int setInitTime(String initTime){
 		try {
+			if (!initTime.matches("^(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
+				throw new ParseException("", 0);
+			}
 			Date inputTime = dateFormat.parse(initTime);
 			FileReader fileReader = new FileReader(logFilePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -31,7 +34,7 @@ public class TimeManager {
 				// System.out.println(inputTime);
 				// System.out.println(lastTime);
 				if (lastTime.compareTo(inputTime) >= 0) {
-					System.err.println("오류)시스템시간입력 의미오류: 마지막구동시간과 같거나 이릅니다.");
+					System.err.println("오류)시스템시각 오류: 마지막구동시간과 같거나 이릅니다.");
 					return 1;
 				}
 			}
@@ -42,7 +45,7 @@ public class TimeManager {
 			// TODO Auto-generated catch block
 			System.err.println("오류)시간비교 오류");
 		} catch (ParseException e) {
-			System.err.println("오류)시스템시간입력 문법오류");
+			System.err.println("오류)시스템시각 오류: 문법/의미규칙오류");
 		}
 		return 1;
 	}
