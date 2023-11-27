@@ -21,7 +21,7 @@ public class Order {
 	private Scanner scan = new Scanner(System.in);
 	private final int COUPONPRICE = 1000;
 	private final int COUPONPROVIDE = COUPONPRICE * 10;
-	
+	//생성자: 비회원 로그인(기본값)
 	public Order(TimeManager tm) {
 		this.tm = tm;
 		//userName초기화
@@ -48,9 +48,14 @@ public class Order {
             System.out.println("오류)메뉴파일을 읽어오는데 실패했습니다");
         }
 	}
+	//생성자: 회원 로그인(비회원로그인+ 유저이름, 유저세팅)
 	public Order(TimeManager tm, String uN) {
 		this(tm);
 		this.user.setName(uN);
+		this.setUser(uN);
+	}
+	//유저파일 정보 가져오기 -> 즐겨찾기 불러오기
+	private void setUser(String uN){
 		File userFile = new File(userFilePath);
 		try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
             String line;
@@ -69,8 +74,16 @@ public class Order {
 			System.out.println("오류)유저파일을 읽어오는데 실패했습니다");
 		}
 	}
+	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값? or setPrice
+	private int getNumCoupon(TimeManager tm){
+
+		return 0;
+	}
 	
 	private void showMenus() {
+		System.out.println("====================");
+		//(2차수정)즐겨찾기 표시 추가
+
 		System.out.println("====================");
 		System.out.println("메뉴\t가격\t메뉴잔량");
 		if(menuItems.size()>0) {
@@ -102,6 +115,15 @@ public class Order {
         case 1:
         	if(parts[0].equals("결제하기"))
         		return this.payItems();
+			try {
+				//(2차수정)즐겨찾기 입력처리
+				int input = Integer.parseInt(parts[0]);
+
+
+			}
+			catch(NumberFormatException e){
+        		System.out.println("알림)적절하지 않은 주문 수량입니다.\n알림)주문수량이 메뉴잔량보다 작은 양의정수값을 입력해주세요.");
+        	}
         	System.out.println("알림)올바른 형식이 아닙니다.");
         	break;
         case 2:
@@ -181,6 +203,8 @@ public class Order {
 		System.out.print("총");
 		System.out.print(totalprice);
 		System.out.println("원입니다.");
+		//* //기존 쿠폰처리
+		
 		//쿠폰보유확인
 		// int cntCouponHas = this.user.getPrice()/COUPONPROVIDE - this.user.getQuantity();
 		int cntCouponHas = this.user.getQuantity();
@@ -220,6 +244,10 @@ public class Order {
 				System.out.println("올바르지 않은 쿠폰 수량 입력입니다.");
 			}
 		}
+		/*/
+		//신규 쿠폰처리
+
+		//*/
 		//결제방법 선택
 		while (true) {
 			System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
@@ -248,6 +276,9 @@ public class Order {
 				}
 			}
 		}
+		System.out.println("이용해주셔서 감사합니다.");
+		
+		System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요?");
 		//파일 관리
 		try {
 			FileWriter fileWriter;
@@ -311,7 +342,6 @@ public class Order {
             e.printStackTrace();
         }
 		//
-		System.out.println("이용해주셔서 감사합니다.");
 		return 1;
 	}
 }
