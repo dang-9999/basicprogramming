@@ -342,13 +342,28 @@ public class Order {
 				}
 			}
 		}
-		//쿠폰사용로그추가
-		
-		//결제완료로그추가
-		//쿠폰발행로그추가
-		System.out.println("주문하신 정보를 즐겨찾기에 추가할까요?");
-		System.out.println("이용해주셔서 감사합니다.");
-		
+		while(true){
+			System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요? (Y or N)");
+			String ans = scan.nextLine().toUpperCase();
+			if (ans == "Y"){
+
+
+				System.out.println("이용해주셔서 감사합니다.");
+				break;
+
+			}
+			else if (ans == "N"){
+
+
+				System.out.println("이용해주셔서 감사합니다.");
+				break;
+
+			}
+			else {
+			System.out.println("잘못 입력하셨습니다. 재입력 부탁드립니다. ");
+			continue;
+		}
+		}
 		//파일 관리
 		try {
 			FileWriter fileWriter;
@@ -364,7 +379,6 @@ public class Order {
 			bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(line);
 			bufferedWriter.close();
-
 
 			
 			//회원정보 수정하기
