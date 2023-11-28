@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class User {
     
-    static String filename = "userFile.txt"; // 파일 이름
+    // static String filename = "userFile.txt"; // 파일 이름
     public static int askInfo(){
 
         Scanner scanner = new Scanner(System.in);
@@ -37,7 +37,7 @@ public class User {
         }
     }
 
-    public static List<String[]> fileTolist() {
+    public static List<String[]> fileTolist(String filename) {
 		List<String[]> userList = new ArrayList<>();
 
         try {
@@ -62,12 +62,12 @@ public class User {
 	}
 
 
-    public static int findPhoneNum(String phoneNum) {
+    public static int findPhoneNumInUser(String phoneNum) {
         //기본적인 선언
 		List<String[]> userList;
 		Boolean found = false;
 
-		userList = fileTolist();
+		userList = fileTolist("userFile.txt");
 
 		//저장된 유저정보가 없을 때
 		if (userList == null){
@@ -95,10 +95,43 @@ public class User {
         return 0;
     }
 
+    public static int findPhoneNumInLog(String phoneNum) {
+        //기본적인 선언
+		List<String[]> logList;
+		Boolean found = false;
+
+		logList = fileTolist("logFile.txt");
+
+		//저장된 유저정보가 없을 때
+		if (logList == null){
+			System.out.println("저장된 이름이 없습니다.");
+			return 0;
+		}
+
+		//반복문을 통해 list를 하나씩 꺼냄
+		for (String[] logInfo : logList){
+			String userNum = logInfo[1];
+            
+			if (userNum.equals(phoneNum)) {
+				//유저 정보가 존재함 & 탈출
+				found = true;
+                return 1;
+            }
+		}
+
+		// 유저 정보가 존재하지 않을 경우 % 탈출
+		if (!found) {
+            return -1; 
+        }
+
+		//오류상황 & 탈출
+        return 0;
+    }
+
     
 
     public static int addPhoneNum(String phoneNum) {
-        int result;
+        int resultInUserFile;
 
         // 입력된 번호가 문법적으로 옳은지 확인
         if (!isValidPhoneNum(phoneNum)) {
@@ -106,15 +139,15 @@ public class User {
         }
 
         // 이미 기록이 있는지 확인
-        result = findPhoneNum(phoneNum);
-        if (result == 1) {
+        resultInUserFile = findPhoneNumInUser(phoneNum);
+        if (resultInUserFile == 1) {
             // 이미 회원 정보가 있는 경우
             return -1;
-        } else if (result == -1) {
+        } else if (resultInUserFile == -1) {
             // 회원 정보가 없는 경우
             try {
                 
-			    FileReader fileReader = new FileReader(filename);  
+			    FileReader fileReader = new FileReader("userFile.txt");  
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 StringBuilder userFileCont = new StringBuilder();
                 String line;
@@ -122,7 +155,7 @@ public class User {
                     userFileCont.append(line).append("\n");
                 }
                 bufferedReader.close();
-                FileWriter fileWriter = new FileWriter(filename);
+                FileWriter fileWriter = new FileWriter("userFile.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 // FileWriter와 BufferedWriter 객체 생성 (파일을 쓰기 모드로 열기)
                 // 메뉴 항목 추가
@@ -145,22 +178,31 @@ public class User {
     }
     
     public static int modifyPhoneNum(String[] phone) {  	
-    	int result = 0;
-  
+        //phone[0]: 기존 전화번호, phone[1]: 바꾸고 싶은 전화번호
+
     	if(!isValidPhoneNum(phone[0]) || !isValidPhoneNum(phone[1])){	//전화번호 문법규칙 검사
     		// System.out.println("규칙에 어긋나는 키 입력입니다.");
     		return 0;
     	}
-    	result = findPhoneNum(phone[0]);	//기존 회원인지 검사 
-    	if(result == 1) {
-    		result = findPhoneNum(phone[1]);	//회원 중복 여부
-    		if(result == 1) {	//회원 존재
+
+        int resultInUserFile = 0;
+
+        // 회원정보파일 내에서 회원 번호 바꾸는 부분
+    	resultInUserFile = findPhoneNumInUser(phone[0]);	//기존 회원인지 검사 
+
+    	if(resultInUserFile == 1) {
+    		resultInUserFile = findPhoneNumInUser(phone[1]);	//회원 중복 여부
+    		if(resultInUserFile == 1) {	//회원 존재
     			System.out.println("이미 같은 번호로 등록된 회원이있습니다.");
     			return -1;
     		}
-    		else if(result == -1) {	//회원 정보 변경
-    			List<String[]> userlist = fileTolist();
-    			
+    		else if(resultInUserFile == -1) {	//회원 정보 변경
+
+                //유저파일에서 변경
+    			List<String[]> userlist = fileTolist("userFile.txt");
+                List<String[]> logList = fileTolist("logFile.txt");
+
+                //유저파일 값 변경하기
     			String price = null;
     			String coupon = null;
     			for(String[] user : userlist) {
@@ -170,9 +212,37 @@ public class User {
     					coupon = user[2];
     				}
     			}
-    			
+                
+                //로그파일 값 변경하기 
+                if(findPhoneNumInLog(phone[0]) == 1 ){
+
+                    try {
+
+                        for(String[] user: logList){if(user[1].equals(phone[0])){user[1] = phone[1];}}
+
+                        FileWriter filewriter = new FileWriter("logFile.txt");
+                        BufferedWriter bufferedwriter = new BufferedWriter(filewriter);
+                        
+                        for(String[] logData : logList) {
+                            String line = String.join(" ", logData);
+                            bufferedwriter.write(line);
+                            bufferedwriter.newLine();
+                        }
+                        
+                        bufferedwriter.close();
+                        filewriter.close();
+
+
+                        
+                    } catch (IOException e) {e.printStackTrace();return 0;}
+
+                    
+                }
+
+                
+    			//파일에 작성하기
     			try {
-    				FileWriter filewriter = new FileWriter(filename);
+    				FileWriter filewriter = new FileWriter("userFile.txt");
     				BufferedWriter bufferedwriter = new BufferedWriter(filewriter);
     				
     				for(String[] user : userlist) {
@@ -187,14 +257,11 @@ public class User {
     				System.out.println("누적 결제액 "+price+"원과 쿠폰 "+coupon+"개가 이전되었습니다.");
                     return 1;
     				
-    			} catch(IOException e) {
-    				e.printStackTrace();
-    				return 0;
-    			}
+    			} catch(IOException e) {e.printStackTrace();return 0;}
             
     		}
     	}
-    	else if(result == -1) {	//기존 회원 아님
+    	else if(resultInUserFile == -1) {	//기존 회원 아님
     		System.out.println("존재하지 않는 회원입니다.");
     		return 0;
     	}
