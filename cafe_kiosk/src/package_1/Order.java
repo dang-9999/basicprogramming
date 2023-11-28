@@ -23,11 +23,12 @@ public class Order {
 	private final int COUPONPRICE = 1000;
 	private final int COUPONPROVIDE = COUPONPRICE * 10;
 	private final int TIMEVALIDATE = 30 * 24 * 60 * 60 * 1000;
+	private final String DEFAULTUSERNAME = "-";
 	//생성자: 비회원 로그인(기본값)
 	public Order(TimeManager tm) {
 		this.tm = tm;
 		//userName초기화
-		user = new Menu("-", 0, 0);
+		user = new Menu(DEFAULTUSERNAME, 0, 0);
 		//ItemList초기화
 		menuItems = new ArrayList<>();
 		orderItems = new ArrayList<>();
@@ -77,8 +78,8 @@ public class Order {
 		}
 	}
 	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값: 변경있으면 1 setPrice
-	private int getNumCoupon(){
-		if(this.user.getName().equals("-")) return 0;
+	private int getCoupon(){
+		if(this.user.getName().equals(DEFAULTUSERNAME)) return 0;
 		int hasChanged = 0;
 		int totalCoupon = 0;
 		int totalMoney = 0;
@@ -264,7 +265,7 @@ public class Order {
 		System.out.println("원입니다.");
 		
 		int useCoupon = 0;
-		this.getNumCoupon();
+		this.getCoupon();
 		while (true) {
 			//쿠폰보유확인
 			// int cntCouponHas = this.user.getPrice()/COUPONPROVIDE - this.user.getQuantity();
@@ -321,7 +322,7 @@ public class Order {
 				System.out.println("\"카드\"혹은 \"현금\"으로 입력해주세요.");
 			}
 			//쿠폰정보 변경확인
-			if (this.getNumCoupon() == 0 || this.user.getName().equals("-"))
+			if (this.getCoupon() == 0 || this.user.getName().equals(DEFAULTUSERNAME))
 				break;
 			System.out.println("오류)쿠폰정보가 변경되었습니다. 쿠폰정보를 다시 확인하고 진행해주세요.");
 		}
@@ -367,7 +368,7 @@ public class Order {
 
 			
 			//회원정보 수정하기
-			if(!this.user.getName().equals("-")){
+			if(!this.user.getName().equals(DEFAULTUSERNAME)){
 				fileReader = new FileReader(userFilePath);
 				bufferedReader = new BufferedReader(fileReader);
 				StringBuilder userFileCont = new StringBuilder();
