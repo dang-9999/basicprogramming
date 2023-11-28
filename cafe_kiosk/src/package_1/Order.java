@@ -54,7 +54,7 @@ public class Order {
 		this.user.setName(uN);
 		this.setUser(uN);
 	}
-	//유저파일 정보 가져오기 -> 즐겨찾기 불러오기
+	//(2차수정)유저파일 정보 가져오기 -> 즐겨찾기 불러오기
 	private void setUser(String uN){
 		File userFile = new File(userFilePath);
 		try (BufferedReader br = new BufferedReader(new FileReader(userFile))) {
@@ -74,10 +74,23 @@ public class Order {
 			System.out.println("오류)유저파일을 읽어오는데 실패했습니다");
 		}
 	}
-	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값? or setPrice
+	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값: 변경있으면 1 setPrice
 	private int getNumCoupon(TimeManager tm){
-
-		return 0;
+		int hasChanged = 0;
+		File logFile = new File(logFilePath);
+		//메뉴Item불러오기
+		try (BufferedReader br = new BufferedReader(new FileReader(logFile))) {
+            String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.trim().split("\\s+");
+				if (parts.length == 3) {
+					String timeStr = parts[0];
+				}
+			}
+        } catch (Exception e) {
+            System.out.println("오류)메뉴파일을 읽어오는데 실패했습니다");
+        }
+		return hasChanged;
 	}
 	
 	private void showMenus() {
