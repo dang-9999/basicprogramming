@@ -322,13 +322,13 @@ public class Main {
                //return 0;
             //else 
                //return 1;
-            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && isMenuName(index[2]) == 1 && isOrderQuantity(index[3]) == 1)
+            if(timeManager.matchTimeFormat(index[0],0) != null && isPhoneNumber(index[1]) == 1 && isMenuName(index[2]) == 1 && isOrderQuantity(index[3]) == 1)
                return 1;
-            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("결제완료") && isMenuPrice(index[3]) == 1)
+            if(timeManager.matchTimeFormat(index[0],0) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("결제완료") && isMenuPrice(index[3]) == 1)
                return 1;
-            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("쿠폰발급") && isMenuPrice(index[3]) == 1)
+            if(timeManager.matchTimeFormat(index[0],0) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("쿠폰발급") && isMenuPrice(index[3]) == 1)
                return 1;
-            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("쿠폰사용") && timeManager.matchTimeFormat(index[3]) != null)
+            if(timeManager.matchTimeFormat(index[0],0) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("쿠폰사용") && timeManager.matchTimeFormat(index[3],0) != null)
                return 1;
             return 0;
          }

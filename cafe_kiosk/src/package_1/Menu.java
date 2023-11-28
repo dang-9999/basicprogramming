@@ -44,8 +44,13 @@ public class Menu {
 	public void setDFQ(int d) {
 		Menu.DFQ = d;
 	}
+
 	public String toString() {
-		return name+"\t"+Integer.toString(price)+"\t"+Integer.toString(quantity);
+		return name + "\t" + Integer.toString(price) + "\t" + Integer.toString(quantity);
+	}
+
+	public String toLogString() {
+		return name + "\t" + Integer.toString(quantity) + "\n";
 	}
 
 }

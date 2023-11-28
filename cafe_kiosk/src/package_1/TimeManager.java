@@ -17,18 +17,19 @@ public class TimeManager {
 	public TimeManager() {
 	}
 	//날짜형식이 맞으면 Date형식, 아니면 null 반환하는 함수
-	public Date matchTimeFormat(String initTime) {
+	public Date matchTimeFormat(String initTime, int errorOut) { //errorOut: error의 출력
 		//(2차수정) 날짜형식 확인 -> 연도 형식 추가 ([0-9][0-9])
 		try{
-			if (!initTime.matches(
-					"^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
-				throw new ParseException("", 0);
-			}
+			// if (!initTime.matches(
+			// 		"^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
+			// 	throw new ParseException("", 0);
+			// }
 			//Date형식으로 변환(이후는 수정할필요없을듯? 테스트는 안해봤어요)
 			Date returnTime = dateFormat.parse(initTime.trim().split("\\s+")[0]);
 			return returnTime;
 		} catch (ParseException e) {
-			System.err.println("오류)시스템시각 오류: 문법/의미규칙오류");
+			if (errorOut == 1)
+				System.err.println("오류)시스템시각 오류: 문법/의미규칙오류");
 		}
 		return null;
 	}
@@ -36,7 +37,7 @@ public class TimeManager {
 	public int setInitTime(String initTime){
 		try {
 			
-			Date inputTime = matchTimeFormat(initTime);
+			Date inputTime = matchTimeFormat(initTime, 1);
 			FileReader fileReader = new FileReader(logFilePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String nline = "", line = "";
@@ -45,7 +46,7 @@ public class TimeManager {
 			}
 			bufferedReader.close();
 			if (!line.equals("")) {
-				Date lastTime = matchTimeFormat(line.trim().split("\\s+")[0]);
+				Date lastTime = matchTimeFormat(line.trim().split("\\s+")[0], 1);
 				// System.out.println(inputTime);
 				// System.out.println(lastTime);
 				if (lastTime.compareTo(inputTime) >= 0) {
@@ -87,11 +88,15 @@ public class TimeManager {
 	public int compareTime(Date time) {
 		if (time == null)
 			return -1;
-		Date currentTime = this.matchTimeFormat(this.getTimeNow());
-		
+		Date currentTime = this.matchTimeFormat(this.getTimeNow(), 0);
+
 		return (int) (currentTime.getTime() - time.getTime());
-	
+
 		//쿠폰 발급 시점 long pastTime
 		//return 현재 시각 - 발급 시점
+	}
+
+	public String toDateFormat(Date date) {
+		return dateFormat.format(logFilePath);
 	}
 }
