@@ -8,7 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TimeManager {
-	SimpleDateFormat dateFormat = new SimpleDateFormat("MMdd/HHmmss");
+	//연도 추가(00~99 제한)
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd/HHmmss");
 	private long startTime;
 	private Date initTime;
 	private final String logFilePath = "logFile.txt";
@@ -17,10 +18,10 @@ public class TimeManager {
 	}
 	//날짜형식이 맞으면 Date형식, 아니면 null 반환하는 함수
 	public Date matchTimeFormat(String initTime) {
-		//(2차수정) 날짜형식 확인
+		//(2차수정) 날짜형식 확인 -> 연도 형식 추가 ([0-9][0-9])
 		try{
 			if (!initTime.matches(
-					"^(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
+					"^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
 				throw new ParseException("", 0);
 			}
 			//Date형식으로 변환(이후는 수정할필요없을듯? 테스트는 안해봤어요)
@@ -56,7 +57,6 @@ public class TimeManager {
 			this.initTime = inputTime;
 			return 0;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.err.println("오류)시간비교 오류");
 		}
 		return 1;
@@ -78,5 +78,20 @@ public class TimeManager {
         long elapsedTime = currentTime - startTime;
 
 		return (int) elapsedTime;
+	}
+	
+	//과거 시간과 현재 시간 사이 흐른 시간을 반환하는 함수
+	//쿠폰 만료기간과 누적액 만료기간
+	//메소드 추가 시점 -> 판매가 완료된 시점
+	//쿠폰을 하나 사용한다는 것 가정 -> 여러 개 받을 시 매개변수 추가하면 됨.
+	public int compareTime(Date time) {
+		if (time == null)
+			return -1;
+		Date currentTime = this.matchTimeFormat(this.getTimeNow());
+		
+		return (int) (currentTime.getTime() - time.getTime());
+	
+		//쿠폰 발급 시점 long pastTime
+		//return 현재 시각 - 발급 시점
 	}
 }

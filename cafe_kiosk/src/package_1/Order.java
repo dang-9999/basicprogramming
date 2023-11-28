@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +22,7 @@ public class Order {
 	private Scanner scan = new Scanner(System.in);
 	private final int COUPONPRICE = 1000;
 	private final int COUPONPROVIDE = COUPONPRICE * 10;
+	private final int TIMEVALIDATE = 30 * 24 * 60 * 60 * 1000;
 	//생성자: 비회원 로그인(기본값)
 	public Order(TimeManager tm) {
 		this.tm = tm;
@@ -75,22 +77,67 @@ public class Order {
 		}
 	}
 	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값: 변경있으면 1 setPrice
-	private int getNumCoupon(TimeManager tm){
+	private int getNumCoupon(){
+		if(this.user.getName().equals("-")) return 0;
 		int hasChanged = 0;
+		int totalCoupon = 0;
+		int totalMoney = 0;
 		File logFile = new File(logFilePath);
-		//메뉴Item불러오기
+		
 		try (BufferedReader br = new BufferedReader(new FileReader(logFile))) {
             String line;
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.trim().split("\\s+");
-				if (parts.length == 3) {
-					String timeStr = parts[0];
+				if (parts.length == 4) {// 시간 전화번호 메뉴이름 주문수량 
+					Date time = tm.matchTimeFormat(parts[0]);
+					if(tm.compareTime(time) < TIMEVALIDATE) { // 시간 비교 
+						if(parts[1].equals(this.user.getName())) { // 전화번호 비교 
+							if(parts[2].equals("쿠폰발행")) {
+								totalCoupon++;
+								totalMoney = Integer.parseInt(parts[3]);
+							} else if(parts[2].equals("결제완료")) {
+								totalMoney += Integer.parseInt(parts[3]);
+							} else if(parts[2].equals("쿠폰사용")) {
+								Date timeUsed = tm.matchTimeFormat(parts[3]);
+								if(tm.compareTime(timeUsed) < TIMEVALIDATE && tm.compareTime(timeUsed)>0) {
+									totalCoupon--;
+								}
+							}
+						}
+					}
 				}
 			}
+			if(this.user.getPrice() != totalCoupon)
+				hasChanged++;
+			this.user.setPrice(totalCoupon);
+	        this.user.setQuantity(totalMoney);
+
         } catch (Exception e) {
             System.out.println("오류)메뉴파일을 읽어오는데 실패했습니다");
         }
 		return hasChanged;
+	}
+	private List<Date> useCoupon(int use) {
+		List<Date> CouponDate = new ArrayList<>();
+		File logFile = new File(logFilePath);
+		try (BufferedReader br = new BufferedReader(new FileReader(logFile))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.trim().split("\\s+");
+				if (parts.length == 4) {//시간 전화번호 메뉴이름(결제완료 쿠폰발행 쿠폰사용) 인자
+					Date time = tm.matchTimeFormat(parts[0]);
+					if (tm.compareTime(time) < TIMEVALIDATE && parts[1].equals(this.user.getName()) && parts[2].equals("쿠폰발행")) {
+					Date timeUsed = tm.matchTimeFormat(parts[3]);
+						if(tm.compareTime(timeUsed) < TIMEVALIDATE && tm.compareTime(timeUsed)>0)
+							CouponDate.add(timeUsed);
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("오류)메뉴파일을 읽어오는데 실패했습니다");
+		}
+		return CouponDate;
 	}
 	
 	private void showMenus() {
@@ -131,7 +178,6 @@ public class Order {
 			try {
 				//(2차수정)즐겨찾기 입력처리
 				int input = Integer.parseInt(parts[0]);
-
 
 			}
 			catch(NumberFormatException e){
@@ -216,62 +262,68 @@ public class Order {
 		System.out.print("총");
 		System.out.print(totalprice);
 		System.out.println("원입니다.");
-		//* //기존 쿠폰처리
 		
-		//쿠폰보유확인
-		// int cntCouponHas = this.user.getPrice()/COUPONPROVIDE - this.user.getQuantity();
-		int cntCouponHas = this.user.getQuantity();
-		if (cntCouponHas<0){
-			System.out.println("오류)쿠폰개수 오류 결제에 실패했습니다.");
-			return 1;
-		}
 		int useCoupon = 0;
-		System.out.print("보유한쿠폰개수: ");
-		System.out.println(cntCouponHas);
-		if(cntCouponHas>0 && totalprice > 0){ //쿠폰개수가 0이상, 쿠폰으로 결제할 금액이 존재하는지.
-			while (true) {
-				System.out.print("쿠폰이 사용가능합니다. 사용할 쿠폰개수를 입력해주세요.(공백>취소하기)\n최대사용가능한 쿠폰개수: ");
-				int MaxUsableCoupan = totalprice / COUPONPRICE + ((totalprice % COUPONPRICE == 0) ? 0 : 1);
-				System.out.print(MaxUsableCoupan);
-				System.out.print("\n>");
-				String userInput = this.scan.nextLine();
-				String[] parts = userInput.trim().split("\\s+");
-				
-				try{
-					useCoupon = Integer.parseInt(parts[0]);
-					if (parts.length == 1) {
-						//사용할쿠폰이 최대사용가능개수, 보유개수이하, 0이상일경우 적절한 입력
-						if(MaxUsableCoupan>=useCoupon && cntCouponHas>=useCoupon&& useCoupon>0){
-							System.out.print("쿠폰적용개수: ");System.out.print(useCoupon);
-							System.out.print(" 쿠폰적용후 결제금액: ");System.out.println(totalprice-=useCoupon*COUPONPRICE);
-							break;
-						}
-						if(useCoupon==0) break;
-					}
-				} catch (NumberFormatException e) {
-					if (parts[0] == "") //취소입력
-						return 0;
-					System.out.println("규칙에 어긋나는 키 입력입니다.");
-					continue;
-				}
-				System.out.println("올바르지 않은 쿠폰 수량 입력입니다.");
-			}
-		}
-		/*/
-		//신규 쿠폰처리
-
-		//*/
-		//결제방법 선택
+		this.getNumCoupon();
 		while (true) {
-			System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
-			String userInput = this.scan.nextLine().trim();
-			if (userInput.equals(""))
-				return 0;
-			else if (userInput.equals("카드"))
+			//쿠폰보유확인
+			// int cntCouponHas = this.user.getPrice()/COUPONPROVIDE - this.user.getQuantity();
+			int cntCouponHas = this.user.getQuantity();
+			if (cntCouponHas<0){
+				System.out.println("오류)쿠폰개수 오류 결제에 실패했습니다.");
+				return 1;
+			}
+			System.out.print("보유한쿠폰개수: ");
+			System.out.println(cntCouponHas);
+			if (cntCouponHas > 0 && totalprice > 0) { //쿠폰개수가 0이상, 쿠폰으로 결제할 금액이 존재하는지.
+				while (true) {
+					System.out.print("쿠폰이 사용가능합니다. 사용할 쿠폰개수를 입력해주세요.(공백>취소하기)\n최대사용가능한 쿠폰개수: ");
+					int MaxUsableCoupan = totalprice / COUPONPRICE + ((totalprice % COUPONPRICE == 0) ? 0 : 1);
+					System.out.print(MaxUsableCoupan);
+					System.out.print("\n>");
+					String userInput = this.scan.nextLine();
+					String[] parts = userInput.trim().split("\\s+");
+
+					try {
+						useCoupon = Integer.parseInt(parts[0]);
+						if (parts.length == 1) {
+							//사용할쿠폰이 최대사용가능개수, 보유개수이하, 0이상일경우 적절한 입력
+							if (MaxUsableCoupan >= useCoupon && cntCouponHas >= useCoupon && useCoupon > 0) {
+
+								System.out.print("쿠폰적용개수: ");
+								System.out.print(useCoupon);
+								System.out.print(" 쿠폰적용후 결제금액: ");
+								System.out.println(totalprice -= useCoupon * COUPONPRICE);
+								break;
+							}
+							if (useCoupon == 0)
+								break;
+						}
+					} catch (NumberFormatException e) {
+						if (parts[0] == "") //취소입력
+							return 0;
+						System.out.println("규칙에 어긋나는 키 입력입니다.");
+						continue;
+					}
+					System.out.println("올바르지 않은 쿠폰 수량 입력입니다.");
+				}
+			}
+			//결제방법 선택
+			while (true) {
+				System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
+				String userInput = this.scan.nextLine().trim();
+				if (userInput.equals(""))
+					return 0;
+				else if (userInput.equals("카드"))
+					break;
+				else if (userInput.equals("현금"))
+					break;
+				System.out.println("\"카드\"혹은 \"현금\"으로 입력해주세요.");
+			}
+			//쿠폰정보 변경확인
+			if (this.getNumCoupon() == 0 || this.user.getName().equals("-"))
 				break;
-			else if (userInput.equals("현금"))
-				break;
-			System.out.println("\"카드\"혹은 \"현금\"으로 입력해주세요.");
+			System.out.println("오류)쿠폰정보가 변경되었습니다. 쿠폰정보를 다시 확인하고 진행해주세요.");
 		}
 		//쿠폰사용 적용하고 적용내역 출력하기
 		this.user.setQuantity(this.user.getQuantity() +(this.user.getPrice()%COUPONPROVIDE+totalprice)/COUPONPROVIDE-  useCoupon);
@@ -279,19 +331,23 @@ public class Order {
 		//로그내용 작성 및 메뉴리스트 수정
 		String log = "";
 		String timeStr = this.tm.getTimeNow();
-		for(Menu item: orderItems) {
-			log+= timeStr+"\t"+this.user.getName()+"\t"+item.getName()+"\t"+item.getQuantity()+"\n";
-			totalprice+= item.getPrice()*item.getQuantity();
-			for(Menu menu: menuItems) {
-				if(item.getName().equals(menu.getName())) {
-					menu.setQuantity(menu.getQuantity()-item.getQuantity());
+		for (Menu item : orderItems) {
+			log += timeStr + "\t" + this.user.getName() + "\t" + item.getName() + "\t" + item.getQuantity() + "\n";
+			totalprice += item.getPrice() * item.getQuantity();
+			for (Menu menu : menuItems) {
+				if (item.getName().equals(menu.getName())) {
+					menu.setQuantity(menu.getQuantity() - item.getQuantity());
 					break;
 				}
 			}
 		}
+		//쿠폰사용로그추가
+		
+		//결제완료로그추가
+		//쿠폰발행로그추가
+		System.out.println("주문하신 정보를 즐겨찾기에 추가할까요?");
 		System.out.println("이용해주셔서 감사합니다.");
 		
-		System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요?");
 		//파일 관리
 		try {
 			FileWriter fileWriter;

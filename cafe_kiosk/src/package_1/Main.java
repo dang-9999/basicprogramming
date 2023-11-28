@@ -290,48 +290,64 @@ public class Main {
 		}
 	}
 
-	public static int checkLine(String filepath, String line) { //맞으면 1, 틀리면 0
-		// TODO Auto-generated method stub
-		String index[] = line.trim().split("\\s+");
-		if(filepath == "userFile.txt") {
-			if(index.length == 0) return 1;
-			if(index.length == 3) {
-				//전화번호, 누적 금액(메뉴 가격), 쿠폰 개수(수량) 문법 검사 함수 호출
-				if(isPhoneNumber(index[0]) == 0 || isMenuPrice(index[1]) == 0 || isOrderQuantity(index[2]) == 0)
-					return 0;
-				else 
-					return 1;
-			}
-			return 0;
-		}
-		//메뉴 파일
-		if(filepath == "menuFile.txt") {
-			if(index.length == 0) return 1;
-			if(index.length == 3) {
-				//메뉴 이름, 메뉴 가격, 잔여 수량 문법 검사 함수 호출
-				if(isMenuName(index[0]) == 0 || isMenuPrice(index[1]) == 0 || isOrderQuantity(index[2]) == 0)
-					return 0;
-				else 
-					return 1;
-			}
-			return 0;
-		}
-		//판매 로그
-		if(filepath == "logFile.txt") {
-			if(index.length == 0) return 1;
-			if(index.length == 4) {
-				//전화번호, 메뉴 이름, 주문 수량 문법 검사 함수 호출 (시간 문법 검사 함수 없음)
-				if(isPhoneNumber(index[1]) == 0 || isMenuName(index[2]) == 0 || isOrderQuantity(index[3]) == 0)
-					return 0;
-				else 
-					return 1;
-			}
-			return 0;
-		}
-		return 0;
-	}
-	
-	// 검사함수들입니다-peace
+	   public static int checkLine(String filepath, String line) { //맞으면 1, 틀리면 0
+      // TODO Auto-generated method stub
+      String index[] = line.trim().split("\\s+");
+      TimeManager timeManager= new TimeManager();
+      if(filepath == "userFile.txt") {
+         if(index.length == 0) return 1;
+         //
+         if(isPhoneNumber(index[0]) == 0 || isbookmark(index[1]))
+            return 0;
+         return 1;
+      }
+      //메뉴 파일
+      if(filepath == "menuFile.txt") {
+         if(index.length == 0) return 1;
+         if(index.length == 3) {
+            //메뉴 이름, 메뉴 가격, 잔여 수량 문법 검사 함수 호출
+            if(isMenuName(index[0]) == 0 || isMenuPrice(index[1]) == 0 || isOrderQuantity(index[2]) == 0)
+               return 0;
+            else 
+               return 1;
+         }
+         return 0;
+      }
+      //판매 로그
+      if(filepath == "logFile.txt") {
+         if(index.length == 0) return 1;
+         if(index.length == 4) {
+            //전화번호, 메뉴 이름, 주문 수량 문법 검사 함수 호출 (시간 문법 검사 함수 없음)
+            //if(isPhoneNumber(index[1]) == 0 || isMenuName(index[2]) == 0 || isOrderQuantity(index[3]) == 0)
+               //return 0;
+            //else 
+               //return 1;
+            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && isMenuName(index[2]) == 1 && isOrderQuantity(index[3]) == 1)
+               return 1;
+            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("결제완료") && isMenuPrice(index[3]) == 1)
+               return 1;
+            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("쿠폰발급") && isMenuPrice(index[3]) == 1)
+               return 1;
+            if(timeManager.matchTimeFormat(index[0]) != null && isPhoneNumber(index[1]) == 1 && index[2].equals("쿠폰사용") && timeManager.matchTimeFormat(index[3]) != null)
+               return 1;
+            return 0;
+         }
+         return 0;
+      }
+      return 0;
+   }
+   
+   // 검사함수들입니다-peace
+   
+   public static boolean isbookmark(String str) {
+      String[] arr = str.trim().split(";");
+      for(String s : arr) {
+         String[] arr2 = s.trim().split("|");
+         if(isMenuName(arr2[0]) == 0 || isOrderQuantity(arr2[1]) == 0)
+            return false;
+      }
+      return true;
+   }
 	
 	public static int isPhoneNumber(String phoneNumber) {	// 전화번호 검사 함수 - return 1==true
 		// 정규식 정의
