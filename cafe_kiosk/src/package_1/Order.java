@@ -22,7 +22,7 @@ public class Order {
 	private Scanner scan = new Scanner(System.in);
 	private final int COUPONPRICE = 1000;
 	private final int COUPONPROVIDE = COUPONPRICE * 10;
-	private final int TIMEVALIDATE = 30 * 24 * 60 * 60 * 1000;
+	private final long TIMEVALIDATE = 30 * 24 * 60 * 60;
 	private final String DEFAULTUSERNAME = "-";
 	//생성자: 비회원 로그인(기본값)
 	public Order(TimeManager tm) {
@@ -93,8 +93,8 @@ public class Order {
 				String[] parts = line.trim().split("\\s+");
 				if (parts.length == 4) {// 시간 전화번호 메뉴이름 주문수량 
 					Date time = tm.matchTimeFormat(parts[0], 1);
-					if (tm.compareTime(time) < TIMEVALIDATE) { // 시간 비교 
-						if (parts[1].equals(this.user.getName())) { // 전화번호 비교 
+					if (tm.compareTime(time) < TIMEVALIDATE) { // 시간 비교
+						if (parts[1].equals(this.user.getName())) { // 전화번호 비교
 							if (parts[2].equals("쿠폰발행")) {
 								totalCoupon++;
 								totalMoney = Integer.parseInt(parts[3]);
@@ -315,14 +315,14 @@ public class Order {
 		while (useCoupon > 0) {
 			log += timeStr + "\t" + this.user.getName() + "\t쿠폰사용\t" + couponDates.get(0).toString();
 			couponDates.remove(0);
-			totalprice -= 1000;
+			totalprice -= COUPONPRICE;
 		}
 		//결제완료 로그추가
 		if(totalprice>0)
 			log += timeStr + "\t" + this.user.getName() + "\t결제완료\t" + Integer.toString(totalprice) + "\n";
 		//쿠폰발행 로그추가
 		totalprice += this.user.getPrice();
-		while (totalprice > 10000) {
+		while (totalprice > COUPONPROVIDE) {
 			log += timeStr + "\t" + this.user.getName() + "\t쿠폰발행\t" + Integer.toString(totalprice -= 10000) + "\n";
 		}
 		
@@ -423,7 +423,10 @@ public class Order {
 					System.out.print("보유한쿠폰개수: ");
 					System.out.println(cntCouponHas);
 					for (Date date : couponDates) {
-						System.out.println(tm.toDateFormat(date));
+						System.out.print("발급일:");
+						System.out.print(tm.toDateFormat(date));
+						System.out.print("\t만료일");
+						System.out.println(tm.toDateFormat(new Date(date.getTime()+TIMEVALIDATE*1000)));
 					}
 				}
 			}

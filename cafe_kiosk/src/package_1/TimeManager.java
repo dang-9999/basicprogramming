@@ -85,18 +85,18 @@ public class TimeManager {
 	//쿠폰 만료기간과 누적액 만료기간
 	//메소드 추가 시점 -> 판매가 완료된 시점
 	//쿠폰을 하나 사용한다는 것 가정 -> 여러 개 받을 시 매개변수 추가하면 됨.
-	public int compareTime(Date time) {
+	public long compareTime(Date time) {
 		if (time == null)
 			return -1;
 		Date currentTime = this.matchTimeFormat(this.getTimeNow(), 0);
 
-		return (int) (currentTime.getTime() - time.getTime());
+		return (currentTime.getTime() - time.getTime())/1000;
 
 		//쿠폰 발급 시점 long pastTime
 		//return 현재 시각 - 발급 시점
 	}
 
 	public String toDateFormat(Date date) {
-		return dateFormat.format(logFilePath);
+		return dateFormat.format(date);
 	}
 }
