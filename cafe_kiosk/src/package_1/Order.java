@@ -364,7 +364,7 @@ public class Order {
                             bookmarkLine += String.join(";", menuItemString);                       
                         }
 
-
+						break;
 
                     }
                     else if (ans.equals("N")) {break;}
