@@ -363,7 +363,7 @@ public class Order {
                             String menuItemString = item.getName() + "|" + item.getQuantity();
 
                             // 모든 메뉴 정보를 공백으로 구분하여 한 줄로 합치기
-                            bookmarkLine += String.join(";", menuItemString);   
+                            bookmarkLine += menuItemString + ";";  
 							System.out.println("오류 캐치 2");
                     
                         }
