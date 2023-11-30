@@ -321,6 +321,7 @@ public class Order {
         //결제완료 로그추가
         if(totalprice>0)
             log += timeStr + "\t" + this.user.getName() + "\t결제완료\t" + Integer.toString(totalprice) + "\n";
+			
         //쿠폰발행 로그추가
         totalprice += this.user.getPrice();
         while (totalprice > COUPONPROVIDE) {
@@ -345,7 +346,7 @@ public class Order {
             bufferedWriter.close();
 
             //회원정보 수정하기
-            String bookmarkLine = "";
+            String bookmarkLine = this.user.getName()+"\t";
             if (!this.user.getName().equals(DEFAULTUSERNAME)) { //회원정보가 있으면
                 
 
@@ -353,21 +354,24 @@ public class Order {
                 while (true) {
                     
                     System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요? (Y or N)");
-                    String ans = scan.nextLine().toUpperCase();
-                    if (ans.equals("Y")) {
+                    String ans = scan.nextLine();
+					System.out.println("오류 캐치 1");
+                    if (ans.equals("Y") || ans.equals("y")) {
                         
                         for(Menu item : orderItems) {
                             // 각 메뉴 정보를 문자열로 변환
                             String menuItemString = item.getName() + "|" + item.getQuantity();
 
                             // 모든 메뉴 정보를 공백으로 구분하여 한 줄로 합치기
-                            bookmarkLine += String.join(";", menuItemString);                       
+                            bookmarkLine += String.join(";", menuItemString);   
+							System.out.println("오류 캐치 2");
+                    
                         }
 
 						break;
 
                     }
-                    else if (ans.equals("N")) {break;}
+                    else if (ans.equals("N") || ans.equals("n")) {break;}
                     else {System.out.println("잘못 입력하셨습니다. 재입력 부탁드립니다. "); continue;}
                 }
 
