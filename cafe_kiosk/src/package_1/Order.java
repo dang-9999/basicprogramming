@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -65,13 +66,13 @@ public class Order {
             String line;
 			while ((line = br.readLine()) != null) {
 				String[] parts = line.trim().split("\\s+");
-				if (parts.length == 3) {
-					String name = parts[0];
-					if (name.equals(uN)) {
-						this.user.setPrice(Integer.parseInt(parts[1]));
-						this.user.setQuantity(Integer.parseInt(parts[2]));
-						break;
+				if (parts[0].equals(this.user.getName())) {
+					parts = Arrays.copyOfRange(parts, 1, parts.length);
+					for (String part : parts) {
+						String[] bookmarkList = part.trim().split(";");
+						
 					}
+					return;
 				}
 			}
 		} catch (Exception e) {
@@ -80,6 +81,7 @@ public class Order {
 		}
 	}
 	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값: 변경있으면 1
+	//완료
 	private int getCoupon() {
 		if (this.user.getName().equals(DEFAULTUSERNAME))
 			return 0;
@@ -123,6 +125,7 @@ public class Order {
 		return hasChanged;
 	}
 	//쿠폰의 미사용 발행일자들을 반환하는 메소드
+	//완료
 	private List<Date> getCouponDates() {
 		if(this.user.getName().equals(DEFAULTUSERNAME)) return null;
 		List<Date> CouponDate = new ArrayList<>();
