@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 //import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -290,16 +291,24 @@ public class Main {
 		}
 	}
 
-	   public static int checkLine(String filepath, String line) { //맞으면 1, 틀리면 0
+	 public static int checkLine(String filepath, String line) { //맞으면 1, 틀리면 0
       // TODO Auto-generated method stub
       String index[] = line.trim().split("\\s+");
+      index = Arrays.stream(index).filter(s -> !s.isEmpty()).toArray(String[]::new);
       TimeManager timeManager= new TimeManager();
       if(filepath == "userFile.txt") {
          if(index.length == 0) return 1;
+         if(index.length == 1) {
+            if(isPhoneNumber(index[0])==0) return 0;
+            return 1;
+         }
          //
-         if(isPhoneNumber(index[0]) == 0 || isbookmark(index[1]))
-            return 0;
-         return 1;
+         if(index.length == 2) {
+            if(isPhoneNumber(index[0]) == 0 || isbookmark(index[1])) return 0;
+            return 1;
+         }
+         
+         return 0;
       }
       //메뉴 파일
       if(filepath == "menuFile.txt") {
@@ -362,32 +371,32 @@ public class Main {
 
 	}
 	
-	public static int isMenuName(String menuName) {		// 메뉴이름 검사 함수 - return 1==true
-		// 검사할 문자열이 "결제하기"인 경우 false 반환
-        if ("결제하기".equals(menuName)) {
+	public static int isMenuName(String menuName) {      // 메뉴이름 검사 함수 - return 1==true
+      boolean isbanned = "결제하기".equals(menuName) || "결제완료".equals(menuName)||"쿠폰발급".equals(menuName)||"쿠폰사용".equals(menuName);
+        if (isbanned) {
             return 0;
         }
         
         // 문자열의 길이가 1 이상이어야 함
         if (menuName.length() < 1) {
-        	return 0;
+           return 0;
         }
 
         // 문자열의 모든 문자가 실제 문자인지 확인
         for (char c : menuName.toCharArray()) {
             if (!Character.isLetter(c)) {
-            	return 0;
+               return 0;
             }
         }
         
         // 탭이나 개행이 없어야 함
         if (menuName.contains("\t") || menuName.contains("\n")) {
-        	return 0;
+           return 0;
         }
         
         // 모든 조건을 만족하면 유효한 메뉴 이름
         return 1;
-		}
+      }
 	
 	public static int isMenuPrice(String menuPrice) {	// 메뉴가격 검사 함수 - return 1==true
 		// "0"이라는 길이 1짜리 문자열이거나

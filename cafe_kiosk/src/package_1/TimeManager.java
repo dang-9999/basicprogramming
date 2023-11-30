@@ -17,22 +17,37 @@ public class TimeManager {
 	public TimeManager() {
 	}
 	//날짜형식이 맞으면 Date형식, 아니면 null 반환하는 함수
-	public Date matchTimeFormat(String initTime, int errorOut) { //errorOut: error의 출력
-		//(2차수정) 날짜형식 확인 -> 연도 형식 추가 ([0-9][0-9])
-		try{
-			if (!initTime.matches(
-					"^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
-				throw new ParseException("", 0);
-			}
-			//Date형식으로 변환(이후는 수정할필요없을듯? 테스트는 안해봤어요)
-			Date returnTime = dateFormat.parse(initTime.trim().split("\\s+")[0]);
-			return returnTime;
-		} catch (ParseException e) {
-			if (errorOut == 1)
-				System.err.println("오류)시스템시각 오류: 문법/의미규칙오류");
-		}
-		return null;
-	}
+	   //날짜형식이 맞으면 Date형식, 아니면 null 반환하는 함수
+   public Date matchTimeFormat(String initTime, int errorOut) { //errorOut: error의 출력
+      //(2차수정) 날짜형식 확인 -> 연도 형식 추가 ([0-9][0-9])
+      try{
+         int year = Integer.parseInt(initTime.substring(0, 2));
+            int month = Integer.parseInt(initTime.substring(2, 4));
+            int day = Integer.parseInt(initTime.substring(4, 6));
+
+            boolean isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+            if (month == 2 && (day > 29 || (day == 29 && !isLeapYear))) {
+               throw new ParseException("", 0); // 2월은 29일까지, 윤년에만 29일이 존재
+            }
+            int[] maxDays = {0, 31, (isLeapYear ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            if (day < 1 || day > maxDays[month]) {
+               throw new ParseException("", 0); // 유효하지 않은 날짜
+            }
+            
+         
+         if (!initTime.matches(
+               "^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
+            throw new ParseException("", 0);
+         }
+         //Date형식으로 변환(이후는 수정할필요없을듯? 테스트는 안해봤어요)
+         Date returnTime = dateFormat.parse(initTime.trim().split("\\s+")[0]);
+         return returnTime;
+      } catch (ParseException e) {
+         if (errorOut == 1)
+            System.err.println("오류)시스템시각 오류: 문법/의미규칙오류");
+      }
+      return null;
+   }
 
 	public int setInitTime(String initTime){
 		try {
