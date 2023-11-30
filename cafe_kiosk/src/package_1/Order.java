@@ -355,7 +355,6 @@ public class Order {
                     
                     System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요? (Y or N)");
                     String ans = scan.nextLine();
-					System.out.println("오류 캐치 1");
                     if (ans.equals("Y") || ans.equals("y")) {
                         
                         for(Menu item : orderItems) {
@@ -364,8 +363,6 @@ public class Order {
 
                             // 모든 메뉴 정보를 공백으로 구분하여 한 줄로 합치기
                             bookmarkLine += menuItemString + ";";  
-							System.out.println("오류 캐치 2");
-                    
                         }
 
 						break;
