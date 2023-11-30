@@ -38,15 +38,20 @@ public class TimeManager {
 		try {
 			
 			Date inputTime = matchTimeFormat(initTime, 1);
+			if (initTime == null)//시간입력이 잘못되면 종료
+				return 1;
 			FileReader fileReader = new FileReader(logFilePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String nline = "", line = "";
 			while ((nline = bufferedReader.readLine()) != null) {
-				line= nline;
+				line = nline;
 			}
+			// System.out.println(line);
 			bufferedReader.close();
 			if (!line.equals("")) {
 				Date lastTime = matchTimeFormat(line.trim().split("\\s+")[0], 1);
+				if (lastTime == null)
+					return 1;
 				// System.out.println(inputTime);
 				// System.out.println(lastTime);
 				if (lastTime.compareTo(inputTime) >= 0) {
