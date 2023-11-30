@@ -312,8 +312,9 @@ public class Order {
 		}
 		//쿠폰사용 로그추가
 		List<Date> couponDates = this.getCouponDates();
-		while (useCoupon > 0) {
-			log += timeStr + "\t" + this.user.getName() + "\t쿠폰사용\t" + couponDates.get(0).toString();
+		// System.out.println(couponDates);
+		while (useCoupon-- > 0) {
+			log += timeStr + "\t" + this.user.getName() + "\t쿠폰사용\t" + tm.toDateFormat(couponDates.get(0))+"\n";
 			couponDates.remove(0);
 			totalprice -= COUPONPRICE;
 		}

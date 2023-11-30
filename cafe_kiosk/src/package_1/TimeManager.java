@@ -20,10 +20,10 @@ public class TimeManager {
 	public Date matchTimeFormat(String initTime, int errorOut) { //errorOut: error의 출력
 		//(2차수정) 날짜형식 확인 -> 연도 형식 추가 ([0-9][0-9])
 		try{
-			// if (!initTime.matches(
-			// 		"^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
-			// 	throw new ParseException("", 0);
-			// }
+			if (!initTime.matches(
+					"^([0-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])/(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$")) {
+				throw new ParseException("", 0);
+			}
 			//Date형식으로 변환(이후는 수정할필요없을듯? 테스트는 안해봤어요)
 			Date returnTime = dateFormat.parse(initTime.trim().split("\\s+")[0]);
 			return returnTime;
