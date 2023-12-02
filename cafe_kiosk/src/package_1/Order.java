@@ -13,19 +13,20 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Order {
-	private List<Menu> menuItems;
-	private List<Menu> orderItems;
+	private List<Menu> menuItems; //메뉴파일의 메뉴정보를 menuObject의 리스트 형태로 저장
+	private List<Menu> orderItems; //주문목록의 메뉴정보를 menuObject의 리스트 형태로 저장
 	private final String menuFilePath = "menuFile.txt";
 	private final String logFilePath = "logFile.txt";
 	private final String userFilePath = "userFile.txt";
-	private Menu user;
-	private TimeManager tm;
+	private Menu user; //유저의 이름, 쿠폰수량, 누적결제액을 저장
+	private TimeManager tm; //시스템의 TimeManager를 전달받아 저장
 	private Scanner scan = new Scanner(System.in);
-	private String wishList;
-	private final int COUPONPRICE = 1000;
-	private final int COUPONPROVIDE = COUPONPRICE * 10;
-	private final long TIMEVALIDATE = 30 * 24 * 60 * 60;
-	private final String DEFAULTUSERNAME = "-";
+	private String bookmark; //즐겨찾기 데이터
+	private final int COUPONPRICE = 1000; //쿠폰의 가치 1000원으로 사용
+	private final int COUPONPROVIDE = COUPONPRICE * 10; //쿠폰의 발급조건 10000원에 한장
+	private final long TIMEVALIDATE = 30 * 24 * 60 * 60; //쿠폰의 유효기간 30일(30일*24시간*60분*60초)
+	private final String DEFAULTUSERNAME = "-";//기본 유저이름(비회원)
+
 	//생성자: 비회원 로그인(기본값)
 	public Order(TimeManager tm) {
 		this.tm = tm;
@@ -59,6 +60,7 @@ public class Order {
 		this(tm);
 		this.setUser(uN);
 	}
+
 	//(2차수정)유저파일 정보 가져오기 -> 즐겨찾기 불러오기
 	private void setUser(String uN) {
 		this.user.setName(uN);
@@ -69,9 +71,9 @@ public class Order {
 				String[] parts = line.trim().split("\\s+");
 				if (parts[0].equals(this.user.getName())) {
 					parts = Arrays.copyOfRange(parts, 1, parts.length);
-					this.wishList = "";
+					this.bookmark = "";
 					for (String part : parts) {
-						this.wishList += part+"/t";
+						this.bookmark += part+"/t";
 					}
 					return;
 				}
@@ -81,13 +83,143 @@ public class Order {
 			System.err.println(e);
 		}
 	}
+	
+	private void showMenus() {
+		//(2차수정)즐겨찾기 표시 추가
+		runbookmark(0);
+		System.out.println("====================");
+		System.out.println("메뉴\t가격\t메뉴잔량");
+		if(menuItems.size()>0) {
+			for(Menu item: menuItems) {
+				System.out.println(item.toString());
+			}
+		}
+		System.out.println("====================");
+		if(orderItems.size()>0) {
+			System.out.println("주문목록\t가격\t주문수량");
+			int priceSum = 0;
+			for(Menu item: orderItems) {
+				System.out.println(item.toString());
+				priceSum+=item.getQuantity()*item.getPrice();
+			}
+			System.out.print("합계: ");
+			System.out.println(priceSum);
+			System.out.println("====================");
+		}
+		System.out.println("메뉴를 주문하려면 \"{메뉴이름} {수량}\", 결제하려면 \"결제하기\"를 입력해주세요");
+	}
 
-	private void runbookmark(int input) { //0이면 보여주기, 1이상이면 해당 즐겨찾기 주문
+	public int run() {
+		showMenus();
+		System.out.print(">");
+		String userInput = this.scan.nextLine();
+		String[] parts = userInput.trim().split("\\s+");
+		// System.out.println(parts.length);
+		switch (parts.length) {
+			case 1:
+				if (parts[0].equals("결제하기"))
+					return this.payItems();
+				try {
+					//(2차수정)즐겨찾기 입력처리 (양수-> 해당 즐겨찾기 주문실행 / 음수-> 해당 즐겨찾기 삭제.)
+					int input = Integer.parseInt(parts[0]);
+					if(input !=0)
+						return runbookmark(input);
+				} catch (NumberFormatException e) {
+					System.out.println("알림)적절하지 않은 주문 수량입니다.\n알림)주문수량이 메뉴잔량보다 작은 양의정수값을 입력해주세요.");
+				}
+				System.out.println("알림)올바른 형식이 아닙니다.");
+				break;
+			case 2: //메뉴주문 입력처리 2개단어
+				String inputname = parts[0];
+				String inputqStr = parts[1];
+				return menuOrder(inputname, inputqStr, 1);
+				// break;
+			default:
+				System.out.println("알림)올바르지 않은 입력입니다.");
+		}
+		return 0;
+	}
+	//menu주문 혹은 메뉴의 주문가능여부를 판단하는 함수: inputqStr이 숫자이고 주문가능한 수량인지 체크
+	// available이 1이면-> 해당 수만큼 주문을 실행한다.
+	// available이 0이면-> 주문가능 여부만 판단하여 반환한다. //0-> 이상없음(주문가능)
+	private int menuOrder(String inputname, String inputqStr, int available) {
+		try {
+			int q = Integer.parseInt(inputqStr);
+			if (q == 0)
+				return 0; //의미없는 입력
+			for (Menu menu : menuItems) {
+				if (menu.getName().equals(inputname)) {
+					//메뉴판에 존재하는 메뉴입력
+					if (menu.getQuantity() >= q) {
+						//적절한 주문수량
+						int sum = q;
+						for (Menu item : orderItems) {
+							if (item.getName().equals(inputname)) {
+								//기존주문수량과의 합에따른 예외처리
+								sum += item.getQuantity();
+								break;
+							}
+						}
+						if (sum == q) {
+							//기존주문과 중복없음.
+							if (sum > 0){
+								if(available>0)
+									return this.addOrderItem(menu, q);
+								return 0;
+							//음수값 주문
+							}
+						} else {
+							//기존주문과 중북
+							//최종주문수량이 적절한 범위.
+							if (sum >= 0 && menu.getQuantity() >= sum) {
+								if(available>0)
+									return adjOrderItem(menu, q);
+								return 0;
+							}
+							//최종주문수량이 적절하지 않은 주문수량
+						}
+						//오류실행
+					}
+					//적절하지 않은 주문수량 0 혹은 잔량이상의 값.
+					throw new NumberFormatException();
+				}
+			}
+			System.out.println("알림)메뉴판에 해당 메뉴가 존재하지 않습니다.");
+			
+		} catch (NumberFormatException e) {
+			if(available>0)
+				System.out.println("알림)적절하지 않은 주문 수량입니다.\n알림)주문수량이 메뉴잔량보다 작은 양의정수값을 입력해주세요.");
+		}
+		
+		return 1;
+	}
+	private int adjOrderItem(Menu menu, int q) {
+		//기존주문 변경
+		for(Menu item: orderItems) {
+			if(item.getName().equals(menu.getName())) {
+				item.setQuantity(item.getQuantity()+q);
+				//최종주문수량이 0이면 주문목록에서 삭제
+				if(item.getQuantity()==0)
+					orderItems.remove(item);
+				return 0;
+			}
+		}
+		throw new NumberFormatException();
+	}
+
+	private int addOrderItem(Menu menu, int quantity) {
+		//신규주문
+		Menu orderItem = new Menu(menu.getName(), menu.getPrice(), quantity);
+		orderItems.add(orderItem);
+		return 0;
+	}
+	//즐겨찾기의 기능 처리(0이면 show, 1이상이면 즐겨찾기 주문, 음수면)
+	private int runbookmark(int input) { //0이면 보여주기, 1이상이면 해당 즐겨찾기 주문
 		if (input == 0) {
-			String[] parts = this.wishList.trim().split("\\s+");
+			String[] parts = this.bookmark.trim().split("\\s+");
 			int bookmarkNum = 1;
-			if(this.wishList.equals(""))
-				return;
+			if(this.bookmark.equals(""))
+				return 0;
 			try{
 				System.out.println("====================");
 				System.out.println("즐겨찾기 목록(메뉴이름x수량)");
@@ -97,34 +229,63 @@ public class Order {
 					String[] list = part.trim().split(";");
 					for (int i = 0; i<list.length-1; i++) {
 						String[] menu = list[i].trim().split("|");
-						// System.out.println(menu[2]);
-						int q = Integer.parseInt(menu[2]);
-						// System.out.println(q);
-						available += menuOrder(menu[0], q, 0);
+						available += menuOrder(menu[0], menu[2], 0);
 					}
 					part = part.replace("|", " x").replace(";", ", ");
 					// System.out.println(available);
 					System.out.println("> "+Integer.toString(bookmarkNum)+" "+part+((available==0)?"":"\t(일부매진)"));
 				}
-			}catch(Exception e){
-				System.err.println("오류즐겨찾기에 오류가 있습니다.");
+			} catch (Exception e) {
+				System.err.println("오류)즐겨찾기에 오류가 있습니다.");
 			}
 		}
 		else if(input>0){
-			String[] parts = this.wishList.trim().split("\\s+");
-			int i = 1;
+			String[] parts = this.bookmark.trim().split("\\s+");
+			int bmNum = 1;
+			orderItems.clear();//기존 주문정보를 지우고 즐겨찾기의 정보만을 가지고 결제진행.
 			for (String part : parts) {
-				if (i++ == input) {
+				if (bmNum++ == input) {
+					int available = 0;
+					// System.out.println(part);
 					String[] list = part.trim().split(";");
-					for (String item : list) {
-						
+					for (int i = 0; i < list.length - 1; i++) {
+						String[] menu = list[i].trim().split("|");
+						available += menuOrder(menu[0], menu[2], 0);
 					}
-					
+					if (available > 0) {
+						System.out.println("오류)즐겨찾기의 일부항목이 품절되었습니다. 잔여수량을 확인후 주문해주세요");
+						return 0;
+					}
+					for (int i = 0; i < list.length - 1; i++) {
+						String[] menu = list[i].trim().split("|");
+						menuOrder(menu[0], menu[2], 1);
+					}
+					return payItems();
 				}
 			}
+			System.out.println("즐겨찾기목록에 존재하지 않는 주문입력입니다. ");
 		} else {
-
+			String[] parts = this.bookmark.trim().split("\\s+");
+			String newbm = "";
+			input *= -1;
+			int bmNum = 1;
+			int delete = 0;
+			for (String part : parts) {
+				if (bmNum++ == input) {
+					delete++;
+					continue;
+				}
+				newbm += part + "\t";
+			}
+			if (delete > 0) {
+				System.out.print(input);
+				System.out.println("번 즐겨찾기 삭제완료.");
+				this.bookmark = newbm;
+			} else {
+				System.out.println("즐겨찾기목록에 존재하지 않는 삭제입력입니다.");
+			}
 		}
+		return 0;
 	}
 
 	//(2차수정)판매로그에서 쿠폰개수 구하기-> return값: 변경있으면 1
@@ -218,132 +379,6 @@ public class Order {
 		return CouponDate;
 	}
 	
-	private void showMenus() {
-		//(2차수정)즐겨찾기 표시 추가
-		runbookmark(0);
-		System.out.println("====================");
-		System.out.println("메뉴\t가격\t메뉴잔량");
-		if(menuItems.size()>0) {
-			for(Menu item: menuItems) {
-				System.out.println(item.toString());
-			}
-		}
-		System.out.println("====================");
-		if(orderItems.size()>0) {
-			System.out.println("주문목록\t가격\t주문수량");
-			int priceSum = 0;
-			for(Menu item: orderItems) {
-				System.out.println(item.toString());
-				priceSum+=item.getQuantity()*item.getPrice();
-			}
-			System.out.print("합계: ");
-			System.out.println(priceSum);
-			System.out.println("====================");
-		}
-		System.out.println("메뉴를 주문하려면 \"{메뉴이름} {수량}\", 결제하려면 \"결제하기\"를 입력해주세요");
-	}
-
-	public int run() {
-		showMenus();
-		System.out.print(">");
-		String userInput = this.scan.nextLine();
-		String[] parts = userInput.trim().split("\\s+");
-		// System.out.println(parts.length);
-		switch (parts.length) {
-			case 1:
-				if (parts[0].equals("결제하기"))
-					return this.payItems();
-				try {
-					//(2차수정)즐겨찾기 입력처리
-					int input = Integer.parseInt(parts[0]);
-
-				} catch (NumberFormatException e) {
-					System.out.println("알림)적절하지 않은 주문 수량입니다.\n알림)주문수량이 메뉴잔량보다 작은 양의정수값을 입력해주세요.");
-				}
-				System.out.println("알림)올바른 형식이 아닙니다.");
-				break;
-			case 2:
-				String inputname = parts[0];
-				String inputqStr = parts[1];
-				try {
-					int q = Integer.parseInt(inputqStr);
-					if (q == 0)
-						return 0; //의미없는 입력
-					return menuOrder(inputname, q, 1);
-
-					
-				} catch (NumberFormatException e) {
-					System.out.println("알림)적절하지 않은 주문 수량입니다.\n알림)주문수량이 메뉴잔량보다 작은 양의정수값을 입력해주세요.");
-				}
-				break;
-			default:
-				System.out.println("알림)올바르지 않은 입력입니다.");
-		}
-		return 0;
-	}
-
-	private int menuOrder(String inputname, int q, int available) {
-		for (Menu menu : menuItems) {
-			if (menu.getName().equals(inputname)) {
-				//메뉴판에 존재하는 메뉴입력
-				if (menu.getQuantity() >= q) {
-					//적절한 주문수량
-					int sum = q;
-					for (Menu item : orderItems) {
-						if (item.getName().equals(inputname)) {
-							//기존주문수량과의 합에따른 예외처리
-							sum += item.getQuantity();
-							break;
-						}
-					}
-					if (sum == q) {
-						//기존주문과 중복없음.
-						if (sum > 0){
-							if(available>0)
-								return this.addOrderItem(menu, q);
-							return 0;
-						//음수값 주문
-						}
-					} else {
-						//기존주문과 중북
-						//최종주문수량이 적절한 범위.
-						if (sum >= 0 && menu.getQuantity() >= sum) {
-							if(available>0)
-								return adjOrderItem(menu, q);
-							return 0;
-						}
-						//최종주문수량이 적절하지 않은 주문수량
-					}
-					//오류실행
-				}
-				//적절하지 않은 주문수량 0 혹은 잔량이상의 값.
-				throw new NumberFormatException();
-			}
-		}
-		System.out.println("알림)메뉴판에 해당 메뉴가 존재하지 않습니다.");
-		return 1;
-	}
-	private int adjOrderItem(Menu menu, int q) {
-		//기존주문 변경
-		for(Menu item: orderItems) {
-			if(item.getName().equals(menu.getName())) {
-				item.setQuantity(item.getQuantity()+q);
-				//최종주문수량이 0이면 주문목록에서 삭제
-				if(item.getQuantity()==0)
-					orderItems.remove(item);
-				return 0;
-			}
-		}
-		throw new NumberFormatException();
-	}
-
-    private int addOrderItem(Menu menu, int quantity) {
-        //신규주문
-        Menu orderItem = new Menu(menu.getName(), menu.getPrice(), quantity);
-        orderItems.add(orderItem);
-        return 0;
-    }
-
     private int payItems() {
         //총액 구하고 출력
         int totalprice = 0;
@@ -407,12 +442,11 @@ public class Order {
             bufferedWriter.close();
 
             //회원정보 수정하기
-            String bookmarkLine = this.user.getName()+"\t"+this.wishList;
+            String bookmarkLine = this.user.getName()+"\t"+this.bookmark;
             if (!this.user.getName().equals(DEFAULTUSERNAME)) { //회원정보가 있으면
                 
                 //즐겨찾기 여부 물어보기 
                 while (true) {
-                    
                     System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요? (Y or N)");
                     String ans = scan.nextLine();
                     if (ans.equals("Y") || ans.equals("y")) {
@@ -431,9 +465,6 @@ public class Order {
                     else if (ans.equals("N") || ans.equals("n")) {break;}
                     else {System.out.println("잘못 입력하셨습니다. 재입력 부탁드립니다. "); continue;}
                 }
-
-
-
 
                 fileReader = new FileReader(userFilePath);
                 bufferedReader = new BufferedReader(fileReader);
@@ -475,13 +506,7 @@ public class Order {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //
-        
-
         System.out.println("이용해주셔서 감사합니다.");
-
-
-
 
         return 1;
     }
