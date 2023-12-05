@@ -306,8 +306,8 @@ public class Main {
          //
          if(a >= 2) {
            if(isPhoneNumber(index[0]) == 0) return 0;
-           for(int i=0; i<a; i++) {
-              if(isbookmark(index[i])) return 0;
+           for(int i=1; i<a; i++) {
+              if(!isbookmark(index[i])) return 0;
            }
             return 1;
          }
@@ -355,7 +355,7 @@ public class Main {
    public static boolean isbookmark(String str) {
       String[] arr = str.trim().split(";");
       for(String s : arr) {
-         String[] arr2 = s.trim().split("|");
+         String[] arr2 = s.trim().split("#");
          if(isMenuName(arr2[0]) == 0 || isOrderQuantity(arr2[1]) == 0)
             return false;
       }

@@ -208,8 +208,6 @@ public class User {
     			for(String[] user : userlist) {
     				if(user[0].equals(phone[0])) {
     					user[0] = phone[1];
-    					price = user[1];
-    					coupon = user[2];
     				}
     			}
                 
@@ -254,7 +252,7 @@ public class User {
     				bufferedwriter.close();
     				filewriter.close();
     				
-    				System.out.println("누적 결제액 "+price+"원과 쿠폰 "+coupon+"개가 이전되었습니다.");
+    				System.out.println("회원정보가 이전되었습니다.");
                     return 1;
     				
     			} catch(IOException e) {e.printStackTrace();return 0;}

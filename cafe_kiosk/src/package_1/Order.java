@@ -86,7 +86,8 @@ public class Order {
 	
 	private void showMenus() {
 		//(2차수정)즐겨찾기 표시 추가
-		runbookmark(0);
+		if(!this.user.getName().equals(DEFAULTUSERNAME))
+			runbookmark(0);
 		System.out.println("====================");
 		System.out.println("메뉴\t가격\t메뉴잔량");
 		if(menuItems.size()>0) {
@@ -185,7 +186,7 @@ public class Order {
 				}
 			}
 			System.out.println("알림)메뉴판에 해당 메뉴가 존재하지 않습니다.");
-			
+			return -1;
 		} catch (NumberFormatException e) {
 			if(available>0)
 				System.out.println("알림)적절하지 않은 주문 수량입니다.\n알림)주문수량이 메뉴잔량보다 작은 양의정수값을 입력해주세요.");
@@ -227,13 +228,17 @@ public class Order {
 					int available = 0;
 					// System.out.println(part);
 					String[] list = part.trim().split(";");
-					for (int i = 0; i<list.length-1; i++) {
-						String[] menu = list[i].trim().split("|");
-						available += menuOrder(menu[0], menu[2], 0);
+					for (int i = 0; i < list.length; i++) {
+						String[] menu = list[i].trim().split("#");
+						// System.out.println(menu.length);
+						// System.out.println(menu[0] + menu[1] + "보여주기");
+						available = menuOrder(menu[0], menu[1], 0);
+						if (available != 0)
+							break;
 					}
-					part = part.replace("|", " x").replace(";", ", ");
+					part = part.replace("#", " x").replace(";", ", ");
 					// System.out.println(available);
-					System.out.println("> "+Integer.toString(bookmarkNum++)+" "+part+((available==0)?"":"\t(일부매진)"));
+					System.out.println(((available==0)?"> ":(available>0)?"(일부품절)":"(메뉴변경)")+Integer.toString(bookmarkNum++)+" "+part);
 				}
 			} catch (Exception e) {
 				System.err.println("오류)즐겨찾기에 오류가 있습니다.");
@@ -249,17 +254,22 @@ public class Order {
 					// System.out.println(part);
 					String[] list = part.trim().split(";");
 					for (int i = 0; i < list.length; i++) {
-						String[] menu = list[i].trim().split("|");
-						available += menuOrder(menu[0], menu[2], 0);
+						String[] menu = list[i].trim().split("#");
+						// System.out.println(menu.length);
+						// System.out.println(menu[3]);
+						// System.out.println(menu[0] + menu[1] + "주문가능");
+						available += menuOrder(menu[0], menu[1], 0);
 					}
 					if (available > 0) {
 						System.out.println("오류)즐겨찾기의 일부항목이 품절되었습니다. 잔여수량을 확인후 주문해주세요");
 						return 0;
 					}
 					for (int i = 0; i < list.length; i++) {
-						String[] menu = list[i].trim().split("|");
-						System.out.println(menu[0] + menu[2] + "주문");
-						menuOrder(menu[0], menu[2], 1);
+						String[] menu = list[i].trim().split("#");
+						// System.out.println(menu.length);
+						// System.out.println(menu[3]);
+						// System.out.println(menu[0] + menu[2] + "주문");
+						menuOrder(menu[0], menu[1], 1);
 					}
 					return payItems();
 				}
@@ -389,7 +399,9 @@ public class Order {
         System.out.print(totalprice);
         System.out.println("원입니다.");
         //사용할 쿠폰의 정보를 사용자로부터 입력받기
-        int useCoupon = this.getNumCouponUse(totalprice);
+		int useCoupon = this.getNumCouponUse(totalprice);
+		if (useCoupon<0)
+			return 0;
         //쿠폰사용 적용하고 적용내역 출력하기
         //this.user.setQuantity(this.user.getQuantity()+ (this.user.getPrice() % COUPONPROVIDE + totalprice) / COUPONPROVIDE - useCoupon);
         //this.user.setPrice(this.user.getPrice() + ((totalprice > useCoupon * COUPONPRICE) ? totalprice : 0));
@@ -454,7 +466,7 @@ public class Order {
                         
                         for(Menu item : orderItems) {
                             // 각 메뉴 정보를 문자열로 변환
-                            String menuItemString = item.getName() + "|" + item.getQuantity();
+                            String menuItemString = item.getName() + "#" + item.getQuantity();
 
                             // 모든 메뉴 정보를 공백으로 구분하여 한 줄로 합치기
                             bookmarkLine += menuItemString + ";";  
@@ -565,7 +577,7 @@ public class Order {
                         }
                     } catch (NumberFormatException e) {
                         if (parts[0] == "") //취소입력
-                            return 0;
+                            return -1;
                         System.out.println("규칙에 어긋나는 키 입력입니다.");
                         continue;
                     }
@@ -577,7 +589,7 @@ public class Order {
                 System.out.print("결제하기)결제방법을 입력해주세요\n(카드/현금)(공백>취소하기)\n>");
                 String userInput = this.scan.nextLine().trim();
                 if (userInput.equals(""))
-                    return 0;
+                    return -1;
                 else if (userInput.equals("카드"))
                     break;
                 else if (userInput.equals("현금"))
