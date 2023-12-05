@@ -119,7 +119,7 @@ public class Order {
 		switch (parts.length) {
 			case 1:
 				if (parts[0].equals("결제하기"))
-					return this.payItems();
+					return this.payItems(0);
 				try {
 					//(2차수정)즐겨찾기 입력처리 (양수-> 해당 즐겨찾기 주문실행 / 음수-> 해당 즐겨찾기 삭제.)
 					int input = Integer.parseInt(parts[0]);
@@ -163,17 +163,17 @@ public class Order {
 						}
 						if (sum == q) {
 							//기존주문과 중복없음.
-							if (sum > 0){
-								if(available>0)
+							if (sum > 0) {
+								if (available > 0)
 									return this.addOrderItem(menu, q);
 								return 0;
-							//음수값 주문
+								//음수값 주문
 							}
 						} else {
 							//기존주문과 중북
 							//최종주문수량이 적절한 범위.
 							if (sum >= 0 && menu.getQuantity() >= sum) {
-								if(available>0)
+								if (available > 0)
 									return adjOrderItem(menu, q);
 								return 0;
 							}
@@ -185,7 +185,9 @@ public class Order {
 					throw new NumberFormatException();
 				}
 			}
-			System.out.println("알림)메뉴판에 해당 메뉴가 존재하지 않습니다.");
+			//메뉴의 존재를 확인할 수 없음.
+			if(available>0)
+				System.out.println("알림)메뉴판에 해당 메뉴가 존재하지 않습니다.");
 			return -1;
 		} catch (NumberFormatException e) {
 			if(available>0)
@@ -271,7 +273,7 @@ public class Order {
 						// System.out.println(menu[0] + menu[2] + "주문");
 						menuOrder(menu[0], menu[1], 1);
 					}
-					return payItems();
+					return payItems(1);
 				}
 			}
 			System.out.println("즐겨찾기목록에 존재하지 않는 주문입력입니다. ");
@@ -390,7 +392,7 @@ public class Order {
 		return CouponDate;
 	}
 	
-    private int payItems() {
+    private int payItems(int addbm) {
         //총액 구하고 출력
         int totalprice = 0;
         for (Menu item : orderItems)
@@ -456,7 +458,7 @@ public class Order {
 
             //회원정보 수정하기
             String bookmarkLine = this.user.getName()+"\t"+this.bookmark;
-            if (!this.user.getName().equals(DEFAULTUSERNAME)) { //회원정보가 있으면
+            if (!this.user.getName().equals(DEFAULTUSERNAME) && addbm>0) { //회원정보가 있으면
                 
                 //즐겨찾기 여부 물어보기 
                 while (true) {
