@@ -73,7 +73,7 @@ public class Order {
 					parts = Arrays.copyOfRange(parts, 1, parts.length);
 					this.bookmark = "";
 					for (String part : parts) {
-						this.bookmark += part+"/t";
+						this.bookmark += part+"\t";
 					}
 					return;
 				}
@@ -233,7 +233,7 @@ public class Order {
 					}
 					part = part.replace("|", " x").replace(";", ", ");
 					// System.out.println(available);
-					System.out.println("> "+Integer.toString(bookmarkNum)+" "+part+((available==0)?"":"\t(일부매진)"));
+					System.out.println("> "+Integer.toString(bookmarkNum++)+" "+part+((available==0)?"":"\t(일부매진)"));
 				}
 			} catch (Exception e) {
 				System.err.println("오류)즐겨찾기에 오류가 있습니다.");
@@ -248,7 +248,7 @@ public class Order {
 					int available = 0;
 					// System.out.println(part);
 					String[] list = part.trim().split(";");
-					for (int i = 0; i < list.length - 1; i++) {
+					for (int i = 0; i < list.length; i++) {
 						String[] menu = list[i].trim().split("|");
 						available += menuOrder(menu[0], menu[2], 0);
 					}
@@ -256,8 +256,9 @@ public class Order {
 						System.out.println("오류)즐겨찾기의 일부항목이 품절되었습니다. 잔여수량을 확인후 주문해주세요");
 						return 0;
 					}
-					for (int i = 0; i < list.length - 1; i++) {
+					for (int i = 0; i < list.length; i++) {
 						String[] menu = list[i].trim().split("|");
+						System.out.println(menu[0] + menu[2] + "주문");
 						menuOrder(menu[0], menu[2], 1);
 					}
 					return payItems();

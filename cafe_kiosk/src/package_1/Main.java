@@ -291,20 +291,24 @@ public class Main {
 		}
 	}
 
-	 public static int checkLine(String filepath, String line) { //맞으면 1, 틀리면 0
+	public static int checkLine(String filepath, String line) { //맞으면 1, 틀리면 0
       // TODO Auto-generated method stub
       String index[] = line.trim().split("\\s+");
       index = Arrays.stream(index).filter(s -> !s.isEmpty()).toArray(String[]::new);
       TimeManager timeManager= new TimeManager();
       if(filepath == "userFile.txt") {
-         if(index.length == 0) return 1;
-         if(index.length == 1) {
+        int a = index.length;
+         if(a == 0) return 1;
+         if(a == 1) {
             if(isPhoneNumber(index[0])==0) return 0;
             return 1;
          }
          //
-         if(index.length == 2) {
-            if(isPhoneNumber(index[0]) == 0 || isbookmark(index[1])) return 0;
+         if(a >= 2) {
+           if(isPhoneNumber(index[0]) == 0) return 0;
+           for(int i=0; i<a; i++) {
+              if(isbookmark(index[i])) return 0;
+           }
             return 1;
          }
          
