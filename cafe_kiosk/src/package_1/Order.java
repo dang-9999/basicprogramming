@@ -458,6 +458,9 @@ public class Order {
 
             //회원정보 수정하기
             String bookmarkLine = this.user.getName()+"\t"+this.bookmark;
+			String[] bookmark_array;
+            String menuItemString = "";
+            String tmpData ="";
             if (!this.user.getName().equals(DEFAULTUSERNAME) && addbm>0) { //회원정보가 있으면
                 
                 //즐겨찾기 여부 물어보기 
@@ -465,14 +468,28 @@ public class Order {
                     System.out.println("현재 주문하신 정보를 즐겨찾기에 추가할까요? (Y or N)");
                     String ans = scan.nextLine();
                     if (ans.equals("Y") || ans.equals("y")) {
+						//menuItemString 앞으로 즐겨찾기에 추가할 데이터 
+                        bookmark_array = this.bookmark.split("\\s+");
                         
                         for(Menu item : orderItems) {
                             // 각 메뉴 정보를 문자열로 변환
-                            String menuItemString = item.getName() + "#" + item.getQuantity();
+                            menuItemString = item.getName() + "#" + item.getQuantity()+ ";";;
 
                             // 모든 메뉴 정보를 공백으로 구분하여 한 줄로 합치기
-                            bookmarkLine += menuItemString + ";";  
+                            bookmarkLine += menuItemString ; 
+                            tmpData += menuItemString;
                         }
+
+
+						//파일데이터와 현재 즐겨찾기에 추가하고 싶은 데이터 비교
+						for (String subBookMark : bookmark_array){
+                            if (subBookMark.equals(tmpData)){
+                                System.out.println("이미 존재하는 즐겨찾기 입니다.");
+                                bookmarkLine = this.user.getName()+"\t"+this.bookmark;
+                                break;
+                            }
+                        }
+
 
 						break;
 
