@@ -249,7 +249,6 @@ public class Order {
 		else if(input>0){
 			String[] parts = this.bookmark.trim().split("\\s+");
 			int bmNum = 1;
-			orderItems.clear();//기존 주문정보를 지우고 즐겨찾기의 정보만을 가지고 결제진행.
 			for (String part : parts) {
 				if (bmNum++ == input) {
 					int available = 0;
@@ -260,12 +259,18 @@ public class Order {
 						// System.out.println(menu.length);
 						// System.out.println(menu[3]);
 						// System.out.println(menu[0] + menu[1] + "주문가능");
-						available += menuOrder(menu[0], menu[1], 0);
+						available = menuOrder(menu[0], menu[1], 0);
+						if (available != 0)
+							break;
 					}
 					if (available > 0) {
 						System.out.println("오류)즐겨찾기의 일부항목이 품절되었습니다. 잔여수량을 확인후 주문해주세요");
 						return 0;
+					}else if (available < 0) {
+						System.out.println("오류)즐겨찾기의 일부항목이 변경/삭제되었습니다.");
+						return 0;
 					}
+					orderItems.clear();//기존 주문정보를 지우고 즐겨찾기의 정보만을 가지고 결제진행.
 					for (int i = 0; i < list.length; i++) {
 						String[] menu = list[i].trim().split("#");
 						// System.out.println(menu.length);
@@ -618,7 +623,8 @@ public class Order {
             //쿠폰정보 변경확인
             if (this.getCoupon() == 0 || this.user.getName().equals(DEFAULTUSERNAME))
                 break;
-            System.out.println("오류)쿠폰정보가 변경되었습니다. 쿠폰정보를 다시 확인하고 진행해주세요.");
+			System.out.println("오류)쿠폰정보가 변경되었습니다. 쿠폰정보를 다시 확인하고 진행해주세요.");
+			useCoupon = 0;
         }
         return useCoupon;
     }
