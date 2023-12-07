@@ -367,9 +367,11 @@ public class Main {
 		String regex = "010[0-9]{4}[0-9]{4}";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(phoneNumber);
-		if(matcher.matches() && phoneNumber.length() == 11) {
+		if(matcher.matches() && phoneNumber.length() == 11)
 			return 1;
-		}else{
+		else if(phoneNumber.equals("-"))
+			return 1;
+		else{
 			return 0;
 		}
 

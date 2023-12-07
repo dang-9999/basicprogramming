@@ -20,7 +20,8 @@ public class TimeManager {
 	   //날짜형식이 맞으면 Date형식, 아니면 null 반환하는 함수
    public Date matchTimeFormat(String initTime, int errorOut) { //errorOut: error의 출력
       //(2차수정) 날짜형식 확인 -> 연도 형식 추가 ([0-9][0-9])
-      try{
+		try {
+			initTime = initTime.trim();
          int year = Integer.parseInt(initTime.substring(0, 2));
             int month = Integer.parseInt(initTime.substring(2, 4));
             int day = Integer.parseInt(initTime.substring(4, 6));
@@ -53,7 +54,7 @@ public class TimeManager {
 		try {
 			
 			Date inputTime = matchTimeFormat(initTime, 1);
-			if (initTime == null)//시간입력이 잘못되면 종료
+			if (initTime == null || inputTime == null)//시간입력이 잘못되면 종료
 				return 1;
 			FileReader fileReader = new FileReader(logFilePath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
