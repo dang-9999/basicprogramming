@@ -119,7 +119,7 @@ public class Order {
 		switch (parts.length) {
 			case 1:
 				if (parts[0].equals("결제하기"))
-					return this.payItems(0);
+					return this.payItems(1);
 				try {
 					//(2차수정)즐겨찾기 입력처리 (양수-> 해당 즐겨찾기 주문실행 / 음수-> 해당 즐겨찾기 삭제.)
 					int input = Integer.parseInt(parts[0]);
@@ -273,7 +273,7 @@ public class Order {
 						// System.out.println(menu[0] + menu[2] + "주문");
 						menuOrder(menu[0], menu[1], 1);
 					}
-					return payItems(1);
+					return payItems(0);
 				}
 			}
 			System.out.println("즐겨찾기목록에 존재하지 않는 주문입력입니다. ");
